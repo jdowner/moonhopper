@@ -1,2 +1,16 @@
-Game experiment of a little guy hopping around from moons or asteroids using a grappling hook.
+DESCRIPTION
+
+Game experiment of a little guy hopping around from moons or asteroids using a
+grappling hook.
+
+
+PLATFORMS
+
+I am developing on linux and this is my primary target. And since this is an
+experiment I may not put in the effort to make it platform independent if I feel
+it is not going anywhere. However, I am developing it with the goal that if I
+want to make it platform independent in the future it should be fairly
+straightforward. To this end I am trying to use platform independent libraries
+in conjunction with CMake.
+
 
