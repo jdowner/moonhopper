@@ -6,6 +6,46 @@
 
 namespace
 {
+  unsigned int createGridDisplayList()
+  {
+    static const unsigned int NUM_X_LINES = 30;
+    static const unsigned int NUM_Y_LINES = 30;
+    static const double dx = 20.0;
+    static const double dy = 20.0;
+
+    unsigned int index = glGenLists(1);
+
+    glNewList(index, GL_COMPILE);
+    
+    glColor3ub(0x22,0x22,0x22);
+
+    glBegin(GL_POLYGON);
+    glVertex2f(-10.0,-10.0);
+    glVertex2f(+10.0,-10.0);
+    glVertex2f(+10.0,+10.0);
+    glVertex2f(-10.0,+10.0);
+    glEnd();
+
+    for (unsigned int i = 0; i < NUM_X_LINES; ++i)
+    {
+      glBegin(GL_LINES);
+      glVertex2f(i * dx - 300.0, -300.0);
+      glVertex2f(i * dx - 300.0, 300.0);
+      glEnd();
+    }
+    for (unsigned int i = 0; i < NUM_Y_LINES; ++i)
+    {
+      glBegin(GL_LINES);
+      glVertex2f(-300.0, i * dy - 300.0);
+      glVertex2f(300.0, i * dy - 300.0);
+      glEnd();
+    }
+    
+    glEndList();
+
+    return index;
+  }
+
   unsigned int createMoonDisplayList()
   {
     unsigned int index = glGenLists(1);
@@ -47,6 +87,7 @@ void Renderer::init()
   glLoadIdentity();
 
   m_moonDisplayList = createMoonDisplayList();
+  m_gridDisplayList = createGridDisplayList();
 }
 
 void Renderer::render(const RendererContext& context) const
@@ -73,32 +114,5 @@ void Renderer::renderMoons(const RendererContext& context) const
 
 void Renderer::renderGrid(const RendererContext& context) const
 {
-  static const unsigned int NUM_X_LINES = 30;
-  static const unsigned int NUM_Y_LINES = 30;
-  static const double dx = 20.0;
-  static const double dy = 20.0;
-  
-  glColor3ub(0x22,0x22,0x22);
-
-  glBegin(GL_POLYGON);
-  glVertex2f(-10.0,-10.0);
-  glVertex2f(+10.0,-10.0);
-  glVertex2f(+10.0,+10.0);
-  glVertex2f(-10.0,+10.0);
-  glEnd();
-  
-  for (unsigned int i = 0; i < NUM_X_LINES; ++i)
-  {
-    glBegin(GL_LINES);
-    glVertex2f(i * dx - 300.0, -300.0);
-    glVertex2f(i * dx - 300.0, 300.0);
-    glEnd();
-  }
-  for (unsigned int i = 0; i < NUM_Y_LINES; ++i)
-  {
-    glBegin(GL_LINES);
-    glVertex2f(-300.0, i * dy - 300.0);
-    glVertex2f(300.0, i * dy - 300.0);
-    glEnd();
-  }
+  glCallList(m_gridDisplayList);
 }

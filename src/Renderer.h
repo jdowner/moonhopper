@@ -18,6 +18,7 @@ class Renderer
 
   private:
     unsigned int m_moonDisplayList;
+    unsigned int m_gridDisplayList;
 };
 
 #endif // RENDERER_H
