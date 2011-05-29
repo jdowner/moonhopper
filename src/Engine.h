@@ -18,11 +18,22 @@ class Engine
 
     void render();
     void update();
+    void sleep();
 
   private:
     RendererContext m_context;
     Renderer m_renderer;
     bool m_running;
+
+    /**
+     * Defines the frequency (Hz) at which the updates are called.
+     */
+    double m_frameRate;
+
+    /**
+     * The last time that the update function was called (seconds).
+     */
+    double m_lastUpdate;
 };
 
 #endif // ENGINE_H

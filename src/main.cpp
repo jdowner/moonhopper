@@ -15,6 +15,7 @@ int main(int argc, char** argv)
     {
       engine.update();
       engine.render();
+      engine.sleep();
     }
 
     engine.shutdown();

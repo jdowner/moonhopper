@@ -3,7 +3,7 @@
 #include <GL/glfw.h>
 #include <GL/glu.h>
 
-Engine::Engine() : m_running(false)
+Engine::Engine() : m_running(false), m_frameRate(30.0), m_lastUpdate(0)
 {
 }
 
@@ -14,7 +14,6 @@ void Engine::init()
     throw std::runtime_error("Unable to initialize glfw");
   }
 
-//  if (!glfwOpenWindow(300,300,0,0,0,0,0,0,GLFW_WINDOW))
   if (!glfwOpenWindow(600,600,0,0,0,0,0,0,GLFW_WINDOW))
   {
     glfwTerminate();
@@ -46,5 +45,16 @@ void Engine::render()
 void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
+  m_lastUpdate = glfwGetTime();
 }
 
+void Engine::sleep()
+{
+  double elapsed = glfwGetTime() - m_lastUpdate;
+  double period = 1.0 / m_frameRate;
+  while (elapsed < period)
+  {
+    glfwSleep(period - elapsed);
+    elapsed = glfwGetTime() - m_lastUpdate;
+  }
+}
