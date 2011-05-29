@@ -1,6 +1,13 @@
 
 set(SRC
-  main.cpp)
+  Engine.cpp
+  Engine.h
+  main.cpp
+  RendererContext.cpp
+  RendererContext.h
+  Renderer.cpp
+  Renderer.h
+)
 
 add_executable(moonhopper ${SRC})
 
