@@ -1,8 +1,11 @@
 
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(SRC
   Engine.cpp
   Engine.h
   main.cpp
+  Moon.cpp
+  Moon.h
   RendererContext.cpp
   RendererContext.h
   Renderer.cpp

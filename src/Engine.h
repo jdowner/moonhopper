@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "Renderer.h"
+#include "RendererContext.h"
 
 /**
  *
@@ -19,6 +20,7 @@ class Engine
     void update();
 
   private:
+    RendererContext m_context;
     Renderer m_renderer;
     bool m_running;
 };
