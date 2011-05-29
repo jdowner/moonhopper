@@ -15,6 +15,9 @@ class Renderer
   private:
     void renderMoons(const RendererContext& context) const;
     void renderGrid(const RendererContext& context) const;
+
+  private:
+    unsigned int m_moonDisplayList;
 };
 
 #endif // RENDERER_H

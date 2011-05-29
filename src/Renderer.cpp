@@ -4,6 +4,29 @@
 #include <GL/glu.h>
 #include "RendererContext.h"
 
+namespace
+{
+  unsigned int createMoonDisplayList()
+  {
+    unsigned int index = glGenLists(1);
+
+    glNewList(index, GL_COMPILE);
+    
+    glColor3ub(0x8C, 0xAE, 0x3C);
+
+    glBegin(GL_QUADS);
+    glVertex2f(-10.0, -10.0);
+    glVertex2f(+10.0, -10.0);
+    glVertex2f(+10.0, +10.0);
+    glVertex2f(-10.0, +10.0);
+    glEnd();
+
+    glEndList();
+
+    return index;
+  }
+}
+
 void Renderer::init()
 {
   glfwSwapInterval(0);
@@ -22,6 +45,8 @@ void Renderer::init()
   gluOrtho2D(-300,300,-300,300);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  m_moonDisplayList = createMoonDisplayList();
 }
 
 void Renderer::render(const RendererContext& context) const
@@ -39,23 +64,20 @@ void Renderer::renderMoons(const RendererContext& context) const
 {
   BOOST_FOREACH(const Moon& moon, context.getMoons())
   {
-    glColor3ub(0x8C, 0xAE, 0x3C);
-
-    glBegin(GL_QUADS);
-    glVertex2f(moon.x - moon.r, moon.y - moon.r);
-    glVertex2f(moon.x + moon.r, moon.y - moon.r);
-    glVertex2f(moon.x + moon.r, moon.y + moon.r);
-    glVertex2f(moon.x - moon.r, moon.y + moon.r);
-    glEnd();
+    glPushMatrix();
+    glTranslatef(moon.x, moon.y, 0.0);
+    glCallList(m_moonDisplayList);
+    glPopMatrix();
   }
 }
 
 void Renderer::renderGrid(const RendererContext& context) const
 {
-  const unsigned int NUM_X_LINES = 30;
-  const unsigned int NUM_Y_LINES = 30;
-  const double dx = 20.0;
-  const double dy = 20.0;
+  static const unsigned int NUM_X_LINES = 30;
+  static const unsigned int NUM_Y_LINES = 30;
+  static const double dx = 20.0;
+  static const double dy = 20.0;
+  
   glColor3ub(0x22,0x22,0x22);
 
   glBegin(GL_POLYGON);
