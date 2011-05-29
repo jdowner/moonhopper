@@ -2,11 +2,17 @@
 #include <iostream>
 
 #include "Engine.h"
+#include "DataStore.h"
 
 int main(int argc, char** argv)
 {
   try
   {
+    if (argc > 1)
+    {
+      DataStore::load(argv[1]);
+    }
+
     Engine engine;
 
     engine.init();

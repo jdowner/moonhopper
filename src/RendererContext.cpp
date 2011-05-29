@@ -1,6 +1,7 @@
 #include "RendererContext.h"
 #include <cstdlib>
 #include <cmath>
+#include "DataStore.h"
 
 namespace
 {
@@ -14,12 +15,12 @@ RendererContext::RendererContext()
 {
   // For now we are just generating some random positions for th moons
   
-  const unsigned int NUM_MOONS = 30;
-  const double MIN_X = -300.0;
-  const double MAX_X = 300.0;
-  const double MIN_Y = -300.0;
-  const double MAX_Y = 300.0;
-  const double MAX_VELOCITY = 30.0;
+  const unsigned int NUM_MOONS = DataStore::get<int>("NumberOfMoons", 32);
+  const double MIN_X = DataStore::get<double>("DomainMinX", -300.0);
+  const double MAX_X = DataStore::get<double>("DomainMaxX", 300.0);
+  const double MIN_Y = DataStore::get<double>("DomainMinY", -300.0);
+  const double MAX_Y = DataStore::get<double>("DomainMaxY", 300.0);
+  const double MAX_VELOCITY = DataStore::get<double>("MaxVelocity", 30.0);
 
   for (unsigned int i = 0; i < NUM_MOONS; ++i)
   {
