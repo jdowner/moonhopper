@@ -1,5 +1,14 @@
 #include "RendererContext.h"
 #include <cstdlib>
+#include <cmath>
+
+namespace
+{
+  double uniform()
+  {
+    return double(rand()) / RAND_MAX;
+  }
+}
 
 RendererContext::RendererContext()
 {
@@ -15,8 +24,9 @@ RendererContext::RendererContext()
   {
     Moon moon;
     moon.r = 10.0;
-    moon.x = MIN_X + (MAX_X - MIN_X) * (double(rand()) / RAND_MAX);
-    moon.y = MIN_Y + (MAX_Y - MIN_Y) * (double(rand()) / RAND_MAX);
+    moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
+    moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
+    moon.theta = 2.0 * M_PI * uniform();
 
     m_moons.push_back(moon);
   }

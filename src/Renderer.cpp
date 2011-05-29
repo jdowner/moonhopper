@@ -7,6 +7,11 @@
 
 namespace
 {
+  double rad2deg(double rad)
+  {
+    return 57.29577951308232087721 * rad;
+  }
+
   unsigned int createGridDisplayList()
   {
     static const unsigned int NUM_X_LINES = 30;
@@ -65,6 +70,17 @@ namespace
       glVertex2f(RADIUS * cos(i * dTHETA), RADIUS * sin(i * dTHETA));
     }
     glEnd();
+    
+
+    glBegin(GL_POLYGON);
+    glColor3ub(0x1C, 0x5E, 0x1C);
+    for (unsigned int i = 0; i < NUM_VERTICES; ++i)
+    {
+      glVertex2f(
+        0.2 * RADIUS * cos(i * dTHETA), 
+        0.2 * RADIUS * sin(i * dTHETA) - RADIUS / 2.0);
+    }
+    glEnd();
 
     glEndList();
 
@@ -112,6 +128,7 @@ void Renderer::renderMoons(const RendererContext& context) const
   {
     glPushMatrix();
     glTranslatef(moon.x, moon.y, 0.0);
+    glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
     glCallList(m_moonDisplayList);
     glPopMatrix();
   }
