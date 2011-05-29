@@ -1,8 +1,22 @@
 #include "Engine.h"
 #include <stdexcept>
+#include <cassert>
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
+
+namespace
+{
+  void wrapPosition(double& x, double minx, double maxx)
+  {
+    assert(maxx > minx);
+
+    const double dx = maxx - minx;
+
+    while (x < minx) x += dx;
+    while (x > maxx) x -= dx;
+  }
+}
 
 Engine::Engine() : m_running(false), m_frameRate(30.0), m_lastUpdate(0)
 {
@@ -69,6 +83,8 @@ void Engine::updateMoonPositions()
   {
     moon.x += dt * moon.u;
     moon.y += dt * moon.v;
+    wrapPosition(moon.x, -300.0, 300.0);
+    wrapPosition(moon.y, -300.0, 300.0);
   }
 }
   
