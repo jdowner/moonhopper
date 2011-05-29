@@ -14,12 +14,12 @@ RendererContext::RendererContext()
 {
   // For now we are just generating some random positions for th moons
   
-  const unsigned int NUM_MOONS = 12;
+  const unsigned int NUM_MOONS = 30;
   const double MIN_X = -300.0;
   const double MAX_X = 300.0;
   const double MIN_Y = -300.0;
   const double MAX_Y = 300.0;
-  const double MAX_VELOCITY = 10.0;
+  const double MAX_VELOCITY = 30.0;
 
   for (unsigned int i = 0; i < NUM_MOONS; ++i)
   {
