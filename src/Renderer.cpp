@@ -99,7 +99,7 @@ void Renderer::init()
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-  glViewport(0,0,300,300);
+  glViewport(0,0,600,600);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 

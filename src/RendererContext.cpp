@@ -19,6 +19,7 @@ RendererContext::RendererContext()
   const double MAX_X = 300.0;
   const double MIN_Y = -300.0;
   const double MAX_Y = 300.0;
+  const double MAX_VELOCITY = 10.0;
 
   for (unsigned int i = 0; i < NUM_MOONS; ++i)
   {
@@ -27,6 +28,11 @@ RendererContext::RendererContext()
     moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
     moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
     moon.theta = 2.0 * M_PI * uniform();
+
+    const double vAngle = 2.0 * M_PI * uniform();
+    const double vMagnitude = MAX_VELOCITY * uniform();
+    moon.u = vMagnitude * cos(vAngle);
+    moon.v = vMagnitude * sin(vAngle);
 
     m_moons.push_back(moon);
   }

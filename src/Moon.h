@@ -6,6 +6,8 @@
  */
 struct Moon
 {
+  double u;
+  double v;
   double x;
   double y;
   double r;
