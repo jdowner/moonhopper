@@ -21,6 +21,9 @@ class Engine
     void sleep();
 
   private:
+    void updateMoonPositions();
+
+  private:
     RendererContext m_context;
     Renderer m_renderer;
     bool m_running;

@@ -13,6 +13,7 @@ class RendererContext
     RendererContext();
 
     const std::vector<Moon>& getMoons() const;
+    std::vector<Moon>& getMoons();
 
   private:
     std::vector<Moon> m_moons;

@@ -42,3 +42,8 @@ const std::vector<Moon>& RendererContext::getMoons() const
 {
   return m_moons;
 }
+
+std::vector<Moon>& RendererContext::getMoons()
+{
+  return m_moons;
+}

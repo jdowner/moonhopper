@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include <stdexcept>
+#include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
 
@@ -46,15 +47,28 @@ void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
   m_lastUpdate = glfwGetTime();
+
+  updateMoonPositions();
 }
 
 void Engine::sleep()
 {
   double elapsed = glfwGetTime() - m_lastUpdate;
-  double period = 1.0 / m_frameRate;
+  const double period = 1.0 / m_frameRate;
   while (elapsed < period)
   {
     glfwSleep(period - elapsed);
     elapsed = glfwGetTime() - m_lastUpdate;
   }
 }
+    
+void Engine::updateMoonPositions()
+{
+  const double dt = 1.0 / m_frameRate;
+  BOOST_FOREACH(Moon& moon, m_context.getMoons())
+  {
+    moon.x += dt * moon.u;
+    moon.y += dt * moon.v;
+  }
+}
+  
