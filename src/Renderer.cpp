@@ -2,6 +2,7 @@
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
+#include <cmath>
 #include "RendererContext.h"
 
 namespace
@@ -48,17 +49,21 @@ namespace
 
   unsigned int createMoonDisplayList()
   {
+    static const unsigned int NUM_VERTICES = 32;
+    static const double RADIUS = 10.0;
+    static const double dTHETA = 2.0 * M_PI / NUM_VERTICES;
+
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
     
     glColor3ub(0x8C, 0xAE, 0x3C);
 
-    glBegin(GL_QUADS);
-    glVertex2f(-10.0, -10.0);
-    glVertex2f(+10.0, -10.0);
-    glVertex2f(+10.0, +10.0);
-    glVertex2f(-10.0, +10.0);
+    glBegin(GL_POLYGON);
+    for (unsigned int i = 0; i < NUM_VERTICES; ++i)
+    {
+      glVertex2f(RADIUS * cos(i * dTHETA), RADIUS * sin(i * dTHETA));
+    }
     glEnd();
 
     glEndList();
