@@ -3,28 +3,37 @@
 
 #include "Engine.h"
 #include "DataStore.h"
+#include "ArgumentHandler.h"
 
 int main(int argc, char** argv)
 {
   try
   {
-    if (argc > 1)
+    ArgumentHandler arguments(argc, argv);
+
+    if (arguments.testing())
     {
-      DataStore::load(argv[1]);
     }
-
-    Engine engine;
-
-    engine.init();
-
-    while (engine.running())
+    else
     {
-      engine.update();
-      engine.render();
-      engine.sleep();
-    }
+      if (arguments.configuration())
+      {
+        DataStore::load(arguments.getConfiguration());
+      }
 
-    engine.shutdown();
+      Engine engine;
+
+      engine.init();
+
+      while (engine.running())
+      {
+        engine.update();
+        engine.render();
+        engine.sleep();
+      }
+
+      engine.shutdown();
+    }
   }
   catch (std::exception& e)
   {
