@@ -13,4 +13,11 @@ want to make it platform independent in the future it should be fairly
 straightforward. To this end I am trying to use platform independent libraries
 in conjunction with CMake.
 
+DEPENDENCIES
+
+Moonhooper requires the following libraries to be installed:
+- glfw
+- GL
+- GLU
+- boost
 

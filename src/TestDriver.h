@@ -5,6 +5,7 @@
 #include <string>
 
 typedef bool(*TestFunction)(void);
+typedef std::vector<std::pair<std::string, TestFunction> > TestSuite;
 
 /**
  *
@@ -16,9 +17,10 @@ class TestDriver
 
     void runTests();
     void registerTest(const std::string& name, TestFunction test);
+    void registerSuite(const TestSuite& suite);
 
   private:
-    std::vector<std::pair<std::string, TestFunction> > m_tests;
+    TestSuite m_tests;
 };
 
 #endif // TESTDRIVER_H

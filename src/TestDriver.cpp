@@ -1,8 +1,10 @@
 #include "TestDriver.h"
 #include <iostream>
+#include "PeriodicDomain_TestSuite.h"
 
 TestDriver::TestDriver() : m_tests(0)
 {
+  registerSuite(PeriodicDomain_TestSuite::getSuite());
 }
 
 void TestDriver::runTests()
@@ -15,7 +17,11 @@ void TestDriver::runTests()
   {
     if (not it->second())
     {
-      std::cout << "Failed: " << it->first << std::endl;
+      std::cout << "Failure: " << it->first << std::endl;
+    }
+    else
+    {
+      std::cout << "Success: " << it->first << std::endl;
     }
   }
 
@@ -25,4 +31,9 @@ void TestDriver::runTests()
 void TestDriver::registerTest(const std::string& name, TestFunction test)
 {
   m_tests.push_back(std::make_pair(name, test));
+}
+
+void TestDriver::registerSuite(const TestSuite& suite)
+{
+  m_tests.insert(m_tests.begin(), suite.begin(), suite.end());
 }

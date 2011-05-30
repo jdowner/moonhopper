@@ -4,21 +4,20 @@
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
+#include "DataStore.h"
 
-namespace
-{
-  void wrapPosition(double& x, double minx, double maxx)
-  {
-    assert(maxx > minx);
-
-    const double dx = maxx - minx;
-
-    while (x < minx) x += dx;
-    while (x > maxx) x -= dx;
-  }
-}
-
-Engine::Engine() : m_running(false), m_frameRate(30.0), m_lastUpdate(0)
+Engine::Engine() : 
+  m_running(false), 
+  m_frameRate(30.0), 
+  m_lastUpdate(0),
+  m_domain(
+    DataStore::get<double>("DomainMinX", -300.0),
+    DataStore::get<double>("DomainMaxX", 300.0),
+    DataStore::get<double>("DomainMinY", -300.0),
+    DataStore::get<double>("DomainMaxY", 300.0)),
+  m_spatial(
+    m_domain,
+    DataStore::get<double>("MoonRadius", 10.0))
 {
 }
 
@@ -63,6 +62,7 @@ void Engine::update()
   m_lastUpdate = glfwGetTime();
 
   updateMoonPositions();
+  updateSpatialTree();
 }
 
 void Engine::sleep()
@@ -81,10 +81,18 @@ void Engine::updateMoonPositions()
   const double dt = 1.0 / m_frameRate;
   BOOST_FOREACH(Moon& moon, m_context.getMoons())
   {
-    moon.x += dt * moon.u;
-    moon.y += dt * moon.v;
-    wrapPosition(moon.x, -300.0, 300.0);
-    wrapPosition(moon.y, -300.0, 300.0);
+    moon.x = m_domain.toX(moon.x + dt * moon.u);
+    moon.y = m_domain.toY(moon.y + dt * moon.v);
   }
 }
   
+void Engine::updateSpatialTree()
+{
+  m_spatial.clear();
+
+  BOOST_FOREACH(Moon& moon, m_context.getMoons())
+  {
+    m_spatial.add(&moon);
+  }
+}
+

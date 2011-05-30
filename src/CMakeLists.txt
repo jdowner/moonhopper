@@ -10,12 +10,20 @@ set(SRC
   main.cpp
   Moon.cpp
   Moon.h
+  PeriodicDomain.cpp
+  PeriodicDomain.h
+  PeriodicDomain_TestSuite.cpp
+  PeriodicDomain_TestSuite.h
+  PeriodicSpatialTree.cpp
+  PeriodicSpatialTree.h
   RendererContext.cpp
   RendererContext.h
   Renderer.cpp
   Renderer.h
   TestDriver.cpp
   TestDriver.h
+  TestUtils.cpp
+  TestUtils.h
 )
 
 add_executable(moonhopper ${SRC})

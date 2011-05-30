@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 #include "RendererContext.h"
+#include "PeriodicSpatialTree.h"
 
 /**
  *
@@ -22,11 +23,23 @@ class Engine
 
   private:
     void updateMoonPositions();
+    void updateSpatialTree();
 
   private:
     RendererContext m_context;
     Renderer m_renderer;
     bool m_running;
+
+    /**
+     * Defines a periodic domain that the moons move in
+     */
+    PeriodicDomain m_domain;
+
+    /**
+     * The PeriodicSpatialTree is responsible for organizing the positions of
+     * the moons so that collision detection is efficient.
+     */
+    PeriodicSpatialTree m_spatial;
 
     /**
      * Defines the frequency (Hz) at which the updates are called.
