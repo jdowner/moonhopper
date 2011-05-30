@@ -10,6 +10,8 @@ set(SRC
   main.cpp
   Moon.cpp
   Moon.h
+  TestDriver.cpp
+  TestDriver.h
   RendererContext.cpp
   RendererContext.h
   Renderer.cpp

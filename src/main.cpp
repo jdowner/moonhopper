@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "DataStore.h"
 #include "ArgumentHandler.h"
+#include "TestDriver.h"
 
 int main(int argc, char** argv)
 {
@@ -13,6 +14,8 @@ int main(int argc, char** argv)
 
     if (arguments.testing())
     {
+      TestDriver driver;
+      driver.runTests();
     }
     else
     {
