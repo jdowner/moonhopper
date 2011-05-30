@@ -16,6 +16,8 @@ set(SRC
   PeriodicDomain_TestSuite.h
   PeriodicSpatialTree.cpp
   PeriodicSpatialTree.h
+  PeriodicSpatialTree_TestSuite.cpp
+  PeriodicSpatialTree_TestSuite.h
   RendererContext.cpp
   RendererContext.h
   Renderer.cpp
