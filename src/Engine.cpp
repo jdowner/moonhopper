@@ -16,10 +16,7 @@ Engine::Engine() :
     DataStore::get<double>("DomainMinX", -300.0),
     DataStore::get<double>("DomainMaxX", 300.0),
     DataStore::get<double>("DomainMinY", -300.0),
-    DataStore::get<double>("DomainMaxY", 300.0)),
-  m_spatial(
-    m_domain,
-    2.0 * DataStore::get<double>("MoonRadius", 10.0))
+    DataStore::get<double>("DomainMaxY", 300.0))
 {
 }
 
@@ -64,7 +61,7 @@ void Engine::update()
   m_lastUpdate = glfwGetTime();
 
   updateMoonPositions();
-  updateSpatialTree();
+  resolveCollisions();
 }
 
 void Engine::sleep()
@@ -88,17 +85,8 @@ void Engine::updateMoonPositions()
   }
 }
   
-void Engine::updateSpatialTree()
+void Engine::resolveCollisions()
 {
-//  m_spatial.clear();
-//
-//  BOOST_FOREACH(Moon& moon, m_context.getMoons())
-//  {
-//    m_spatial.add(&moon);
-//  }
-//
-//  m_spatial.resolveCollisions();
-
   std::vector<Moon>& moons = m_context.getMoons();
   for(size_t i = 0; i < moons.size() - 1; ++i)
   {
