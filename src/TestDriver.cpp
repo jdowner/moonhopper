@@ -1,12 +1,10 @@
 #include "TestDriver.h"
 #include <iostream>
 #include "PeriodicDomain_TestSuite.h"
-#include "PeriodicSpatialTree_TestSuite.h"
 
 TestDriver::TestDriver() : m_tests(0)
 {
   registerSuite(PeriodicDomain_TestSuite::getSuite());
-  registerSuite(PeriodicSpatialTree_TestSuite::getSuite());
 }
 
 void TestDriver::runTests()
