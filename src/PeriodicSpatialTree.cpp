@@ -4,25 +4,26 @@
 #include "Moon.h"
 
 PeriodicSpatialTree::PeriodicSpatialTree(const PeriodicDomain& domain,
-  double featureSize) :
+  double diameter) :
   m_domain(domain),
-  m_featureSize(featureSize)
+  m_diameter(diameter)
 {
   m_width = m_domain.getMaxX() - m_domain.getMinX();
   m_height = m_domain.getMaxY() - m_domain.getMinY();
 
-  m_dx = m_width / floor(m_width / m_featureSize);
-  m_dy = m_height / floor(m_height / m_featureSize);
-  m_cols = static_cast<unsigned int>(m_width/m_dx);
-  m_rows = static_cast<unsigned int>(m_height/m_dy);
+  m_cols = static_cast<unsigned int>(m_width / m_diameter);
+  m_rows = static_cast<unsigned int>(m_height / m_diameter);
+
+  m_dx = m_width / m_cols;
+  m_dy = m_height / m_rows;
 }
 
 void PeriodicSpatialTree::add(Moon* moon)
 {
   const unsigned int hash = calculateHash(moon);
-  assert(m_data.end() != m_data.find(hash));
 
-  m_data.insert(std::make_pair(hash, moon));
+  assert(m_data.find(hash) == m_data.end());
+  m_data.insert(std::make_pair(hash,moon));
 }
 
 unsigned int PeriodicSpatialTree::calculateHash(Moon* moon) const
@@ -32,8 +33,8 @@ unsigned int PeriodicSpatialTree::calculateHash(Moon* moon) const
   const double relX = m_domain.toX(moon->x - moon->r) - m_domain.getMinX();
   const double relY = m_domain.toY(moon->y - moon->r) - m_domain.getMinY();
 
-  assert(relX > 0.0);
-  assert(relY > 0.0);
+  assert(relX >= 0.0);
+  assert(relY >= 0.0);
 
   const unsigned int i = floor(relX / m_dx);
   const unsigned int j = floor(relY / m_dy);
@@ -75,18 +76,52 @@ void PeriodicSpatialTree::resolveCollisionWith(
   std::map<unsigned int, Moon*>::iterator result = m_data.find(hash);
   if (m_data.end() != result)
   {
-    double dx = moon->x - result->second->x;
-    double dy = moon->y - result->second->y;
+    Moon* other = result->second;
 
-    dx = std::min(dx, m_width - dx);
-    dy = std::min(dy, m_height - dy);
+    const double r = moon->r + other->r;
 
-    const double r = moon->r + result->second->r;
+    double dx = other->x - moon->x;
+    double dy = other->y - moon->y;
 
+    if (dx < -m_diameter)
+    {
+      dx += m_width;
+    }
+
+    if (dx > m_diameter)
+    {
+      dx -= m_width;
+    }
+
+    if (dy < -m_diameter)
+    {
+      dy += m_height;
+    }
+
+    if (dy > m_diameter)
+    {
+      dy -= m_height;
+    }
+    
+    assert(dx < 2.0 * m_diameter);
+    assert(dy < 2.0 * m_diameter);
+    
     if (dx * dx + dy * dy < r * r)
     {
-      
+      const double du = other->u - moon->u;
+      const double dv = other->v - moon->v;
+      const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
+      const double nu = alpha * dx;
+      const double nv = alpha * dy;
+      moon->u += nu;
+      moon->v += nv;
+      other->u -= nu;
+      other->v -= nv;
     }
   }
 }
 
+size_t PeriodicSpatialTree::numberOfMoons() const
+{
+  return m_data.size();
+}

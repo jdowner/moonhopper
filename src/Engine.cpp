@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <stdexcept>
 #include <cassert>
+#include <cmath>
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
@@ -17,7 +18,7 @@ Engine::Engine() :
     DataStore::get<double>("DomainMaxY", 300.0)),
   m_spatial(
     m_domain,
-    DataStore::get<double>("MoonRadius", 10.0))
+    2.0 * DataStore::get<double>("MoonRadius", 10.0))
 {
 }
 
@@ -94,5 +95,7 @@ void Engine::updateSpatialTree()
   {
     m_spatial.add(&moon);
   }
+
+  m_spatial.resolveCollisions();
 }
 

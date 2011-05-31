@@ -17,13 +17,24 @@ void TestDriver::runTests()
 
   for(Tests::const_iterator it = m_tests.begin(); it != m_tests.end(); ++it)
   {
-    if (not it->second())
+    try
     {
-      std::cout << "Failure: " << it->first << std::endl;
+      if (not it->second())
+      {
+        std::cout << "Failure: " << it->first << std::endl;
+      }
+      else
+      {
+        std::cout << "Success: " << it->first << std::endl;
+      }
     }
-    else
+    catch (std::exception& e)
     {
-      std::cout << "Success: " << it->first << std::endl;
+      std::cout << "Error: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+      std::cout << "Error: Unrecognized exception" << std::endl;
     }
   }
 
