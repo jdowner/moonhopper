@@ -33,12 +33,15 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB)
   {
     const double du = moonB.u - moonA.u;
     const double dv = moonB.v - moonA.v;
-    const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
-    const double nu = alpha * dx;
-    const double nv = alpha * dy;
-    moonA.u += nu;
-    moonA.v += nv;
-    moonB.u -= nu;
-    moonB.v -= nv;
+    if (du * dx + dv * dy <= 0.0)
+    {
+      const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
+      const double nu = alpha * dx;
+      const double nv = alpha * dy;
+      moonA.u += nu;
+      moonA.v += nv;
+      moonB.u -= nu;
+      moonB.v -= nv;
+    }
   }
 }
