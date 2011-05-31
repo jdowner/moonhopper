@@ -19,6 +19,9 @@ class PeriodicDomain
     double getMinY() const;
     double getMaxY() const;
 
+    double getWidth() const;
+    double getHeight() const;
+
   private:
     double m_minx;
     double m_maxx;

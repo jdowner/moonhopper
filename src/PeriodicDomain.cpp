@@ -48,3 +48,12 @@ double PeriodicDomain::getMaxY() const
   return m_maxy;
 }
 
+double PeriodicDomain::getWidth() const
+{
+  return m_maxx - m_minx;
+}
+
+double PeriodicDomain::getHeight() const
+{
+  return m_maxy - m_miny;
+}

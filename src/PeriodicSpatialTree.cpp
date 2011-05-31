@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include "Moon.h"
+#include "CollisionResolution.h"
 
 PeriodicSpatialTree::PeriodicSpatialTree(const PeriodicDomain& domain,
   double diameter) :
@@ -76,48 +77,49 @@ void PeriodicSpatialTree::resolveCollisionWith(
   std::map<unsigned int, Moon*>::iterator result = m_data.find(hash);
   if (m_data.end() != result)
   {
-    Moon* other = result->second;
-
-    const double r = moon->r + other->r;
-
-    double dx = other->x - moon->x;
-    double dy = other->y - moon->y;
-
-    if (dx < -m_diameter)
-    {
-      dx += m_width;
-    }
-
-    if (dx > m_diameter)
-    {
-      dx -= m_width;
-    }
-
-    if (dy < -m_diameter)
-    {
-      dy += m_height;
-    }
-
-    if (dy > m_diameter)
-    {
-      dy -= m_height;
-    }
-    
-    assert(dx < 2.0 * m_diameter);
-    assert(dy < 2.0 * m_diameter);
-    
-    if (dx * dx + dy * dy < r * r)
-    {
-      const double du = other->u - moon->u;
-      const double dv = other->v - moon->v;
-      const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
-      const double nu = alpha * dx;
-      const double nv = alpha * dy;
-      moon->u += nu;
-      moon->v += nv;
-      other->u -= nu;
-      other->v -= nv;
-    }
+    elasticCollision(m_domain, *moon, *result->second);
+//    Moon* other = result->second;
+//
+//    const double r = moon->r + other->r;
+//
+//    double dx = other->x - moon->x;
+//    double dy = other->y - moon->y;
+//
+//    if (dx < -m_diameter)
+//    {
+//      dx += m_width;
+//    }
+//
+//    if (dx > m_diameter)
+//    {
+//      dx -= m_width;
+//    }
+//
+//    if (dy < -m_diameter)
+//    {
+//      dy += m_height;
+//    }
+//
+//    if (dy > m_diameter)
+//    {
+//      dy -= m_height;
+//    }
+//    
+//    assert(dx < 2.0 * m_diameter);
+//    assert(dy < 2.0 * m_diameter);
+//    
+//    if (dx * dx + dy * dy < r * r)
+//    {
+//      const double du = other->u - moon->u;
+//      const double dv = other->v - moon->v;
+//      const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
+//      const double nu = alpha * dx;
+//      const double nv = alpha * dy;
+//      moon->u += nu;
+//      moon->v += nv;
+//      other->u -= nu;
+//      other->v -= nv;
+//    }
   }
 }
 

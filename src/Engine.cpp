@@ -6,6 +6,7 @@
 #include <GL/glfw.h>
 #include <GL/glu.h>
 #include "DataStore.h"
+#include "CollisionResolution.h"
 
 Engine::Engine() : 
   m_running(false), 
@@ -89,13 +90,22 @@ void Engine::updateMoonPositions()
   
 void Engine::updateSpatialTree()
 {
-  m_spatial.clear();
+//  m_spatial.clear();
+//
+//  BOOST_FOREACH(Moon& moon, m_context.getMoons())
+//  {
+//    m_spatial.add(&moon);
+//  }
+//
+//  m_spatial.resolveCollisions();
 
-  BOOST_FOREACH(Moon& moon, m_context.getMoons())
+  std::vector<Moon>& moons = m_context.getMoons();
+  for(size_t i = 0; i < moons.size() - 1; ++i)
   {
-    m_spatial.add(&moon);
+    for(size_t j = i + 1; j < moons.size(); ++j)
+    {
+      elasticCollision(m_domain, moons[i], moons[j]);
+    }
   }
-
-  m_spatial.resolveCollisions();
 }
 

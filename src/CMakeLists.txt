@@ -3,6 +3,8 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(SRC
   ArgumentHandler.cpp
   ArgumentHandler.h
+  CollisionResolution.cpp
+  CollisionResolution.h
   DataStore.cpp
   DataStore.h
   Engine.cpp
