@@ -23,12 +23,13 @@ RendererContext::RendererContext()
   const double MAX_VELOCITY = DataStore::get<double>("MaxVelocity", 30.0);
   const double MAX_ANGULARVELOCITY = 
     DataStore::get<double>("MaxAngularVelocity", M_PI);
-  const double RADIUS = DataStore::get<double>("MoonRadius", 10.0);
+  const double MIN_RADIUS = DataStore::get<double>("MinMoonRadius", 5.0);
+  const double MAX_RADIUS = DataStore::get<double>("MaxMoonRadius", 30.0);
 
   for (unsigned int i = 0; i < NUM_MOONS; ++i)
   {
     Moon moon;
-    moon.r = RADIUS;
+    moon.r = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS) * uniform();
     moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
     moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
     moon.theta = 2.0 * M_PI * uniform();
