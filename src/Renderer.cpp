@@ -55,7 +55,7 @@ namespace
   unsigned int createMoonDisplayList()
   {
     static const unsigned int NUM_VERTICES = 32;
-    static const double RADIUS = 10.0;
+    static const double RADIUS = 1.0;
     static const double dTHETA = 2.0 * M_PI / NUM_VERTICES;
 
     unsigned int index = glGenLists(1);
@@ -129,6 +129,7 @@ void Renderer::renderMoons(const RendererContext& context) const
     glPushMatrix();
     glTranslatef(moon.x, moon.y, 0.0);
     glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
+    glScalef(moon.r,moon.r,moon.r);
     glCallList(m_moonDisplayList);
     glPopMatrix();
   }
