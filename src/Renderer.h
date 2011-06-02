@@ -1,6 +1,8 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "TextureManager.h"
+
 class RendererContext;
 
 /**
@@ -19,6 +21,7 @@ class Renderer
   private:
     unsigned int m_moonDisplayList;
     unsigned int m_gridDisplayList;
+    TextureManager m_textures;
 };
 
 #endif // RENDERER_H

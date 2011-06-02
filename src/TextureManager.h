@@ -26,26 +26,26 @@ private:
 	TextureMap				m_map;
 	TextureDataContainer	m_data;
 
-	void LoadPNG( const std::string& filename, InternalTexture& texture );
-	void SavePNG( const std::string& filename, const InternalTexture& texture );
+	void loadPNG( const std::string& filename, InternalTexture& texture );
+	void savePNG( const std::string& filename, const InternalTexture& texture );
 
-	void CreateTextureObject( InternalTexture& texture ) const;
-	void SwapRedAndBlueBits( InternalTexture& texture ) const;
+	void createTextureObject( InternalTexture& texture ) const;
+	void swapRedAndBlueBits( InternalTexture& texture ) const;
 
 public:
 	~TextureManager();
 
-	bool LoadTexture( const std::string& filename, const std::string& textureID );
-	void UnloadTexture( const std::string& textureID );
-	void UnbindTextures();
-	void DeleteTextures();
+	bool loadTexture( const std::string& filename, const std::string& textureID );
+	void unloadTexture( const std::string& textureID );
+	void unbindTextures();
+	void deleteTextures();
 
-	int NumberOfTextures() const;
+	int numberOfTextures() const;
 
-	unsigned int GetTextureHandle( const std::string& name );
+	unsigned int getTextureHandle( const std::string& name );
 
-	Texture* GetTexture( const std::string& name );
-	Texture* GetTexture( int index );
+	Texture* getTexture( const std::string& name );
+	Texture* getTexture( int index );
 		
 };
 

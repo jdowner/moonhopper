@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 #include <cmath>
 #include "RendererContext.h"
+#include "DataStore.h"
 
 namespace
 {
@@ -106,6 +107,8 @@ void Renderer::init()
   gluOrtho2D(-300,300,-300,300);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  m_textures.loadTexture(DataStore::get<std::string>("MoonImg"), "moon");
 
   m_moonDisplayList = createMoonDisplayList();
   m_gridDisplayList = createGridDisplayList();

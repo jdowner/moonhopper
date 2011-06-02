@@ -24,6 +24,8 @@ set(SRC
   TestDriver.h
   TestUtils.cpp
   TestUtils.h
+  TextureManager.cpp
+  TextureManager.h
 )
 
 add_executable(moonhopper ${SRC})

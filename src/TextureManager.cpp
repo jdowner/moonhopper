@@ -18,7 +18,7 @@ namespace
 //
 TextureManager::~TextureManager()
 {
-	DeleteTextures();
+	deleteTextures();
 }
 
 //
@@ -26,7 +26,7 @@ TextureManager::~TextureManager()
 //	associated with the filename, so filenames must be unique
 //	to the textures used. 
 //
-bool TextureManager::LoadTexture( const std::string& filename, const std::string& textureID )
+bool TextureManager::loadTexture( const std::string& filename, const std::string& textureID )
 {
 	// If this name is already in the manager, the texture is not loaded
 	if ( m_map.end() == m_map.find( textureID ) )
@@ -35,10 +35,10 @@ bool TextureManager::LoadTexture( const std::string& filename, const std::string
 		InternalTexture* texture = new InternalTexture;
 
 		// Load the image
-		LoadPNG( filename, *texture );
+		loadPNG( filename, *texture );
 		
 		// Create an object that OpenGL can work with
-		CreateTextureObject( *texture );
+		createTextureObject( *texture );
 
 		// Store pointer to the texture 
 		m_map[ textureID ] = texture;
@@ -50,14 +50,14 @@ bool TextureManager::LoadTexture( const std::string& filename, const std::string
 //
 //	Removes the texture from the manager
 //
-void TextureManager::UnloadTexture( const std::string& /*textureName*/ )
+void TextureManager::unloadTexture( const std::string& /*textureName*/ )
 {
 }
 
 //
 //	Returns the number of textures stored in the manager
 //
-int TextureManager::NumberOfTextures() const
+int TextureManager::numberOfTextures() const
 {
 	return (int)m_map.size();
 }
@@ -65,7 +65,7 @@ int TextureManager::NumberOfTextures() const
 //
 //	Returns a pointer to the named texture
 //
-Texture* TextureManager::GetTexture( const std::string& name )
+Texture* TextureManager::getTexture( const std::string& name )
 {
 	TextureMap::iterator texture = m_map.find( name );
 	return ( m_map.end() != texture) ? ( texture->second ) : ( NULL );
@@ -74,7 +74,7 @@ Texture* TextureManager::GetTexture( const std::string& name )
 //
 //	Returns a pointer to indicated texture
 //
-Texture* TextureManager::GetTexture( int index )
+Texture* TextureManager::getTexture( int index )
 {
 	if ( (int)m_map.size() <= index )
 	{
@@ -90,7 +90,7 @@ Texture* TextureManager::GetTexture( int index )
 //
 //	Generates OpenGL texture objects for each image
 //
-void TextureManager::CreateTextureObject( InternalTexture& texture ) const
+void TextureManager::createTextureObject( InternalTexture& texture ) const
 {
 	// Check the dimensions of the texture
 	if ( !texture.height || !texture.width )
@@ -125,7 +125,7 @@ void TextureManager::CreateTextureObject( InternalTexture& texture ) const
 //
 //	Swaps the red bits with the blue bits
 //
-void TextureManager::SwapRedAndBlueBits( InternalTexture& texture ) const
+void TextureManager::swapRedAndBlueBits( InternalTexture& texture ) const
 {
 	const int pixels = texture.height * texture.width;
 	const unsigned int chunk = texture.bytes;
@@ -140,7 +140,7 @@ void TextureManager::SwapRedAndBlueBits( InternalTexture& texture ) const
 //
 //	Remove all of the textures from the OpenGL state machine.
 //
-void TextureManager::UnbindTextures()
+void TextureManager::unbindTextures()
 {
 	for ( TextureMap::iterator texture = m_map.begin(); texture != m_map.end(); ++texture )
 	{
@@ -151,10 +151,10 @@ void TextureManager::UnbindTextures()
 //
 //	Destroys all textures
 //
-void TextureManager::DeleteTextures()
+void TextureManager::deleteTextures()
 {
 	// Make sure that the textures are unbound from OpenGL
-	UnbindTextures();
+	unbindTextures();
 
 	// Now we can safely delete the textures
 	for ( TextureMap::iterator texture = m_map.begin(); texture != m_map.end(); ++texture )
@@ -170,7 +170,7 @@ void TextureManager::DeleteTextures()
 //
 //	Returns the handle of the requested texture
 //
-unsigned int TextureManager::GetTextureHandle( const std::string& name )
+unsigned int TextureManager::getTextureHandle( const std::string& name )
 {
 	TextureMap::iterator texture = m_map.find( name );
 	if ( m_map.end() == texture )
@@ -184,7 +184,7 @@ unsigned int TextureManager::GetTextureHandle( const std::string& name )
 //
 //	Loads a PNG file into a texture
 //
-void TextureManager::LoadPNG( const std::string& filename, InternalTexture& texture )
+void TextureManager::loadPNG( const std::string& filename, InternalTexture& texture )
 {
 	unsigned char header[PNG_HEADER_LENGTH];
 	FILE *fp;
@@ -263,7 +263,7 @@ void TextureManager::LoadPNG( const std::string& filename, InternalTexture& text
 //
 //	Saves a PNG file from a texture
 //
-void TextureManager::SavePNG( const std::string& filename, const InternalTexture& texture )
+void TextureManager::savePNG( const std::string& filename, const InternalTexture& texture )
 {	
 	// Open file to write to 
 	FILE *fp = fopen( filename.c_str(), "wb");
