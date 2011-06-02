@@ -108,7 +108,7 @@ void Renderer::init()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  m_textures.loadTexture(DataStore::get<std::string>("MoonImg"), "moon");
+//  m_textures.loadTexture(DataStore::get<std::string>("MoonImg"), "moon");
 
   m_moonDisplayList = createMoonDisplayList();
   m_gridDisplayList = createGridDisplayList();
