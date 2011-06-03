@@ -14,9 +14,11 @@ class ArgumentHandler
     bool testing() const;
     bool configuration() const;
 
-    const std::string& getConfiguration() const;
+    std::string getConfiguration() const;
+    const std::string& getResourcePath() const;
 
   private:
+    std::string m_resourcePath;
     std::string m_config;
     bool m_loadConfig;
     bool m_runTests;

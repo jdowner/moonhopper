@@ -24,6 +24,8 @@ int main(int argc, char** argv)
         DataStore::load(arguments.getConfiguration());
       }
 
+      DataStore::set("ResourcePath", arguments.getResourcePath());
+
       Engine engine;
 
       engine.init();

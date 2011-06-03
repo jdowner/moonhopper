@@ -2,6 +2,7 @@
 #define DATASTORE_H
 
 #include <string>
+#include <sstream>
 #include <map>
 #include <cassert>
 #include <boost/lexical_cast.hpp>
@@ -14,6 +15,14 @@ class DataStore
   public:
     static void load(const std::string& filename);
     static bool contains(const std::string& key);
+
+    template <typename T>
+    static void set(const std::string& key, const T& value)
+    {
+      std::ostringstream oss;
+      oss << value;
+      getInstance().m_data[key] = oss.str();
+    }
 
     template <typename T>
     static T get(const std::string& key)
