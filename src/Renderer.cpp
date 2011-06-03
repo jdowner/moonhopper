@@ -53,7 +53,7 @@ namespace
     return index;
   }
 
-  unsigned int createMoonDisplayList()
+  unsigned int createMoonDisplayList(const TextureManager& textures)
   {
     static const unsigned int NUM_VERTICES = 32;
     static const double RADIUS = 1.0;
@@ -62,25 +62,12 @@ namespace
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
-    
-    glColor3ub(0x8C, 0xAE, 0x3C);
 
-    glBegin(GL_POLYGON);
-    for (unsigned int i = 0; i < NUM_VERTICES; ++i)
-    {
-      glVertex2f(RADIUS * cos(i * dTHETA), RADIUS * sin(i * dTHETA));
-    }
-    glEnd();
-    
-
-    glBegin(GL_POLYGON);
-    glColor3ub(0x1C, 0x5E, 0x1C);
-    for (unsigned int i = 0; i < NUM_VERTICES; ++i)
-    {
-      glVertex2f(
-        0.2 * RADIUS * cos(i * dTHETA), 
-        0.2 * RADIUS * sin(i * dTHETA) - RADIUS / 2.0);
-    }
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(-RADIUS, -RADIUS);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(-RADIUS, RADIUS);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(RADIUS, RADIUS);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(RADIUS, -RADIUS);
     glEnd();
 
     glEndList();
@@ -94,11 +81,13 @@ void Renderer::init()
   glfwSwapInterval(0);
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glShadeModel(GL_SMOOTH);
-  glDisable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-  glEnable( GL_BLEND );
+//  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
 
   glViewport(0,0,600,600);
   glMatrixMode(GL_PROJECTION);
@@ -108,15 +97,17 @@ void Renderer::init()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-//  m_textures.loadTexture(DataStore::get<std::string>("MoonImg"), "moon");
+  const std::string path(DataStore::get<std::string>("ResourcePath"));
+  
+  m_textures.loadTexture(path + DataStore::get<std::string>("MoonImg"), "moon");
 
-  m_moonDisplayList = createMoonDisplayList();
+  m_moonDisplayList = createMoonDisplayList(m_textures);
   m_gridDisplayList = createGridDisplayList();
 }
 
 void Renderer::render(const RendererContext& context) const
 {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   
   renderGrid(context);
