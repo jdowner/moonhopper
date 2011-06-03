@@ -6,16 +6,22 @@ ArgumentHandler::ArgumentHandler(int argc, char** argv) :
   m_loadConfig(false),
   m_config("")
 {
-  if (argc >= 2)
+  for (unsigned int index = 1; index < argc; ++index)
   {
-    if (strcmp(argv[1], "--test") == 0)
+    if (strcmp(argv[index], "--test") == 0)
     {
       m_runTests = true;
     }
-    else if (strcmp(argv[1], "--config") == 0)
+    else if (strcmp(argv[index], "--config") == 0)
     {
       m_loadConfig = true;
-      m_config = std::string(argv[2]);
+      m_config = std::string(argv[++index]);
+    }
+    else if (strcmp(argv[index], "--resources") == 0)
+    {
+    }
+    else if (strcmp(argv[index], "--help") == 0)
+    {
     }
   }
 }
