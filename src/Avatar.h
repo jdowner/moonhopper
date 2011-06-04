@@ -7,6 +7,7 @@
 struct Avatar
 {
   double theta;
+  double height;
 };
 
 #endif // AVATAR_H
