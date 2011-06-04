@@ -23,6 +23,7 @@ class Engine
 
   private:
     void updateMoonPositions();
+    void updateAvatarPosition();
     void resolveCollisions();
 
   private:

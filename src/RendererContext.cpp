@@ -12,6 +12,7 @@ namespace
 }
 
 RendererContext::RendererContext()
+: m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
 {
   // For now we are just generating some random positions for th moons
   
@@ -42,6 +43,8 @@ RendererContext::RendererContext()
 
     m_moons.push_back(moon);
   }
+
+  m_avatar.theta = 0.0;
 }
 
 const std::vector<Moon>& RendererContext::getMoons() const
@@ -52,4 +55,19 @@ const std::vector<Moon>& RendererContext::getMoons() const
 std::vector<Moon>& RendererContext::getMoons()
 {
   return m_moons;
+}
+
+void RendererContext::moveLeft()
+{
+  m_avatar.theta += m_avatarAngularSpeed;
+}
+
+void RendererContext::moveRight()
+{
+  m_avatar.theta -= m_avatarAngularSpeed;
+}
+
+const Avatar& RendererContext::getAvatar() const
+{
+  return m_avatar;
 }

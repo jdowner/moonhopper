@@ -61,6 +61,7 @@ void Engine::update()
   m_lastUpdate = glfwGetTime();
 
   updateMoonPositions();
+  updateAvatarPosition();
   resolveCollisions();
 }
 
@@ -83,6 +84,18 @@ void Engine::updateMoonPositions()
     moon.x = m_domain.toX(moon.x + dt * moon.u);
     moon.y = m_domain.toY(moon.y + dt * moon.v);
     moon.theta += dt * moon.dtheta;
+  }
+}
+
+void Engine::updateAvatarPosition()
+{
+  if (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT))
+  {
+    m_context.moveLeft();
+  }
+  if (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT))
+  {
+    m_context.moveRight();
   }
 }
   

@@ -164,7 +164,7 @@ void Renderer::renderAvatar(const RendererContext& context) const
 
   glPushMatrix();
   glTranslatef(moon.x, moon.y, 0.0);
-  glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
+  glRotatef(rad2deg(moon.theta + context.getAvatar().theta), 0.0, 0.0, 1.0);
   glTranslatef(0.0, 19.0 + moon.r, 0.0);
   glScalef(10.0,10.0,10.0);
   glCallList(m_avatarDisplayList);
