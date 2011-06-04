@@ -59,19 +59,37 @@ namespace
 
   unsigned int createMoonDisplayList(const TextureManager& textures)
   {
-    static const unsigned int NUM_VERTICES = 32;
-    static const double RADIUS = 1.0;
-    static const double dTHETA = 2.0 * M_PI / NUM_VERTICES;
-
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
 
+    glBindTexture(GL_TEXTURE_2D, textures.getTextureHandle("moon"));
+
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2f(-RADIUS, -RADIUS);
-    glTexCoord2f(0.0f, 1.0f); glVertex2f(-RADIUS, RADIUS);
-    glTexCoord2f(1.0f, 1.0f); glVertex2f(RADIUS, RADIUS);
-    glTexCoord2f(1.0f, 0.0f); glVertex2f(RADIUS, -RADIUS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0, -1.0);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0, 1.0);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0, 1.0);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0, -1.0);
+    glEnd();
+
+    glEndList();
+
+    return index;
+  }
+
+  unsigned int createAvatarDisplayList(const TextureManager& textures)
+  {
+    unsigned int index = glGenLists(1);
+
+    glNewList(index, GL_COMPILE);
+
+    glBindTexture(GL_TEXTURE_2D, textures.getTextureHandle("avatar"));
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0, -2.0);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0, 2.0);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0, 2.0);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0, -2.0);
     glEnd();
 
     glEndList();
@@ -85,7 +103,6 @@ void Renderer::init()
   glfwSwapInterval(0);
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glShadeModel(GL_SMOOTH);
-//  glEnable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
 
@@ -104,8 +121,10 @@ void Renderer::init()
   const std::string path(DataStore::get<std::string>("ResourcePath"));
   
   m_textures.loadTexture(path + DataStore::get<std::string>("MoonImg"), "moon");
+  m_textures.loadTexture(path + DataStore::get<std::string>("Avatar"), "avatar");
 
   m_moonDisplayList = createMoonDisplayList(m_textures);
+  m_avatarDisplayList = createAvatarDisplayList(m_textures);
   m_gridDisplayList = createGridDisplayList();
 }
 
@@ -116,6 +135,7 @@ void Renderer::render(const RendererContext& context) const
   
   renderGrid(context);
   renderMoons(context);
+  renderAvatar(context);
   
   glfwSwapBuffers();
 }
@@ -136,4 +156,17 @@ void Renderer::renderMoons(const RendererContext& context) const
 void Renderer::renderGrid(const RendererContext& context) const
 {
   glCallList(m_gridDisplayList);
+}
+
+void Renderer::renderAvatar(const RendererContext& context) const
+{
+  const Moon& moon = context.getMoons().back();
+
+  glPushMatrix();
+  glTranslatef(moon.x, moon.y, 0.0);
+  glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
+  glTranslatef(0.0, 19.0 + moon.r, 0.0);
+  glScalef(10.0,10.0,10.0);
+  glCallList(m_avatarDisplayList);
+  glPopMatrix();
 }

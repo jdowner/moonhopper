@@ -42,7 +42,7 @@ public:
 
 	int numberOfTextures() const;
 
-	unsigned int getTextureHandle( const std::string& name );
+	unsigned int getTextureHandle( const std::string& name ) const;
 
 	Texture* getTexture( const std::string& name );
 	Texture* getTexture( int index );

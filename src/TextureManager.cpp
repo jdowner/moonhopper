@@ -94,11 +94,11 @@ void TextureManager::createTextureObject( InternalTexture& texture ) const
 {
 	// Check the dimensions of the texture
 	if ( !texture.height || !texture.width )
-		throw "Textures must have non-zero dimensions";
+		throw std::runtime_error("Textures must have non-zero dimensions");
 		
 	if ( ( ( texture.height & ( texture.height - 1 ) ) != 0 ) || 
 		( ( texture.width & ( texture.width - 1 ) ) != 0 ) )
-		throw "Texture dimensions must be a power of two";
+		throw std::runtime_error("Texture dimensions must be a power of two");
 
 	glGenTextures( 1, &(texture.handle) );
 	glBindTexture(GL_TEXTURE_2D, texture.handle);
@@ -170,9 +170,9 @@ void TextureManager::deleteTextures()
 //
 //	Returns the handle of the requested texture
 //
-unsigned int TextureManager::getTextureHandle( const std::string& name )
+unsigned int TextureManager::getTextureHandle( const std::string& name ) const
 {
-	TextureMap::iterator texture = m_map.find( name );
+	TextureMap::const_iterator texture = m_map.find( name );
 	if ( m_map.end() == texture )
 	{
 		throw std::runtime_error("ERROR: Unable to find requested texture");
