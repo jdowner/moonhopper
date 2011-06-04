@@ -23,7 +23,9 @@ namespace
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
-    
+   
+    glDisable(GL_TEXTURE_2D);
+
     glColor3ub(0x22,0x22,0x22);
 
     glBegin(GL_POLYGON);
@@ -47,6 +49,8 @@ namespace
       glVertex2f(300.0, i * dy - 300.0);
       glEnd();
     }
+    
+    glEnable(GL_TEXTURE_2D);
     
     glEndList();
 
