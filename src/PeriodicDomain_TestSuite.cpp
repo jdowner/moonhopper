@@ -2,17 +2,20 @@
 #include "PeriodicDomain.h"
 #include "TestUtils.h"
 
-bool testConstruction()
+namespace
 {
-  PeriodicDomain domain(-1.0,0.0,-1.0,0.0);
+  bool testConstruction()
+  {
+    PeriodicDomain domain(-1.0,0.0,-1.0,0.0);
 
-  // Test the max/min accessors
-  ASSERT_EQUAL(-1.0, domain.getMinX()); 
-  ASSERT_EQUAL(0.0, domain.getMaxX()); 
-  ASSERT_EQUAL(-1.0, domain.getMinY()); 
-  ASSERT_EQUAL(0.0, domain.getMaxY()); 
+    // Test the max/min accessors
+    ASSERT_EQUAL(-1.0, domain.getMinX()); 
+    ASSERT_EQUAL(0.0, domain.getMaxX()); 
+    ASSERT_EQUAL(-1.0, domain.getMinY()); 
+    ASSERT_EQUAL(0.0, domain.getMaxY()); 
 
-  return true;
+    return true;
+  }
 }
 
 bool testRemapping()

@@ -1,10 +1,12 @@
 #include "TestDriver.h"
 #include <iostream>
 #include "PeriodicDomain_TestSuite.h"
+#include "Animation_TestSuite.h"
 
 TestDriver::TestDriver() : m_tests(0)
 {
   registerSuite(PeriodicDomain_TestSuite::getSuite());
+  registerSuite(Animation_TestSuite::getSuite());
 }
 
 void TestDriver::runTests()

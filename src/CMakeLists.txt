@@ -3,6 +3,8 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(SRC
   Animation.cpp
   Animation.h
+  Animation_TestSuite.cpp
+  Animation_TestSuite.h
   AnimationFrame.h
   ArgumentHandler.cpp
   ArgumentHandler.h

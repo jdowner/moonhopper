@@ -1,0 +1,10 @@
+<animations id="avatar">
+  <animation id="running" src="running.png">
+    <frame>
+      <height>64</height>
+      <width>32</width>
+      <period>1.0</period>
+      <offset>0.0</offset>
+    </frame>
+  </animation>
+</animations>
