@@ -1,4 +1,4 @@
-
+set(CMAKE_CXX_FLAGS -DTIXML_USE_STL)
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(SRC
   Animation.cpp

@@ -23,6 +23,8 @@ bool test_equal(const S& expected, const T& actual)
 }
 
 #define TEST(Group,Function) makeTest(#Group,#Function,&Function)
+#define ASSERT(expr) \
+  { if (!(expr)) return false; }
 #define ASSERT_EQUAL(expected,actual) \
   { if (!test_equal((expected),(actual))) return false; }
 
