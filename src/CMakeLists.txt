@@ -1,6 +1,9 @@
 
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(SRC
+  Animation.cpp
+  Animation.h
+  AnimationFrame.h
   ArgumentHandler.cpp
   ArgumentHandler.h
   CollisionResolution.cpp
@@ -30,4 +33,4 @@ set(SRC
 
 add_executable(moonhopper ${SRC})
 
-target_link_libraries(moonhopper GL GLU glfw png)
+target_link_libraries(moonhopper GL GLU glfw png tinyxml)
