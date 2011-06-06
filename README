@@ -21,4 +21,5 @@ Moonhooper requires the following libraries to be installed:
 - GLU
 - boost
 - libpng
+- tinyxml
 
