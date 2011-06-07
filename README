@@ -13,13 +13,19 @@ want to make it platform independent in the future it should be fairly
 straightforward. To this end I am trying to use platform independent libraries
 in conjunction with CMake.
 
+
 DEPENDENCIES
 
-Moonhooper requires the following libraries to be installed:
+Moonhooper depends upon the following libraries:
 - glfw
 - GL
 - GLU
 - boost
 - libpng
 - tinyxml
+
+Tinyxml is a special case. It is included as part of the source code because I
+had a strange situation with library locations on different machines, which was
+easiest to solve by including tinyxml in the source and compiling it into a
+shared library.
 
