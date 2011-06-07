@@ -33,6 +33,9 @@ set(SRC
   TextureManager.h
 )
 
+include_directories(../tinyxml)
+link_directories(../lib)
+
 add_executable(moonhopper ${SRC})
 
 target_link_libraries(moonhopper GL GLU glfw png tinyxml)
