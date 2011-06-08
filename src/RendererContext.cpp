@@ -72,3 +72,17 @@ const Avatar& RendererContext::getAvatar() const
 {
   return m_avatar;
 }
+
+void RendererContext::jump()
+{
+  // calculate the direction of the avatar
+
+  // ray cast from the avatar to the first moon or boundary:
+  // (a) if a moon is hit, move the avatar to the nex moon
+  // (b) if a boundary is hit recalculate the ray as if it had passed through
+  //     the periodic boundary
+  // (c) if the ray has travelled its maximum distance, stop.
+
+  // If the ray hits a moon, determine the location on the surface of the moon
+  // where the intersection occurred and reset the avatar.
+}

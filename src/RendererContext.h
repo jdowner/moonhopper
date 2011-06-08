@@ -19,6 +19,7 @@ class RendererContext
 
     void moveLeft();
     void moveRight();
+    void jump();
 
   private:
     std::vector<Moon> m_moons;

@@ -93,9 +93,13 @@ void Engine::updateAvatarPosition()
   {
     m_context.moveLeft();
   }
-  if (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT))
+  else if (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT))
   {
     m_context.moveRight();
+  }
+  else if (GLFW_RELEASE == glfwGetKey(GLFW_KEY_UP))
+  {
+    m_context.jump();
   }
 }
   
