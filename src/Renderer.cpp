@@ -86,10 +86,10 @@ namespace
     glBindTexture(GL_TEXTURE_2D, textures.getTextureHandle("avatar"));
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2f(-0.25, -0.5);
-    glTexCoord2f(0.0f, 1.0f); glVertex2f(-0.25, 0.5);
-    glTexCoord2f(1.0f, 1.0f); glVertex2f(0.25, 0.5);
-    glTexCoord2f(1.0f, 0.0f); glVertex2f(0.25, -0.5);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(-0.25, 0.0);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(-0.25, 1.0);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(0.25, 1.0);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(0.25, 0.0);
     glEnd();
 
     glEndList();
@@ -160,13 +160,15 @@ void Renderer::renderGrid(const RendererContext& context) const
 
 void Renderer::renderAvatar(const RendererContext& context) const
 {
-  const Moon& moon = context.getMoons().back();
   const Avatar& avatar = context.getAvatar();
+  const Moon* moon = avatar.current;
+  
+  assert(moon);
 
   glPushMatrix();
-  glTranslatef(moon.x, moon.y, 0.0);
-  glRotatef(rad2deg(moon.theta + avatar.theta), 0.0, 0.0, 1.0);
-  glTranslatef(0.0, 0.5 * avatar.height + moon.r, 0.0);
+  glTranslatef(moon->x, moon->y, 0.0);
+  glRotatef(rad2deg(moon->theta + avatar.theta), 0.0, 0.0, 1.0);
+  glTranslatef(0.0, moon->r, 0.0);
   glScalef(avatar.height, avatar.height, avatar.height);
   glCallList(m_avatarDisplayList);
   
@@ -174,10 +176,10 @@ void Renderer::renderAvatar(const RendererContext& context) const
   if (context.isJumping())
   {
     glDisable(GL_TEXTURE_2D);
-    glColor3ub(255,255,255);
+    glColor3ub(255,0,255);
     glBegin(GL_LINES);
     glVertex2f(0.0, 0.0);
-    glVertex2f(0.0, 1.0);
+    glVertex2f(0.0, 10.0);
     glEnd();
     glEnable(GL_TEXTURE_2D);
   }

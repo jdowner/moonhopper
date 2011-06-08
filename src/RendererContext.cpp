@@ -47,6 +47,7 @@ RendererContext::RendererContext()
 
   m_avatar.theta = 0.0;
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
+  m_avatar.current = &m_moons.back();
 
   m_ray.ox = 0.0;
   m_ray.oy = 0.0;
