@@ -4,6 +4,7 @@
 #include <vector>
 #include "Moon.h"
 #include "Avatar.h"
+#include "Ray.h"
 
 /**
  *
@@ -20,11 +21,17 @@ class RendererContext
     void moveLeft();
     void moveRight();
     void jump();
+    void idle();
+
+    bool isJumping() const;
+    bool isIdle() const;
 
   private:
     std::vector<Moon> m_moons;
     Avatar m_avatar;
     const double m_avatarAngularSpeed;
+    Ray m_ray;
+    bool m_jumping;
 };
 
 #endif // RENDERERCONTEXT_H

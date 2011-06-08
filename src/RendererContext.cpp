@@ -13,6 +13,7 @@ namespace
 
 RendererContext::RendererContext()
 : m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
+, m_jumping(false)
 {
   // For now we are just generating some random positions for th moons
   
@@ -76,6 +77,7 @@ const Avatar& RendererContext::getAvatar() const
 void RendererContext::jump()
 {
   // calculate the direction of the avatar
+  m_jumping = true;
 
   // ray cast from the avatar to the first moon or boundary:
   // (a) if a moon is hit, move the avatar to the nex moon
@@ -86,3 +88,19 @@ void RendererContext::jump()
   // If the ray hits a moon, determine the location on the surface of the moon
   // where the intersection occurred and reset the avatar.
 }
+
+void RendererContext::idle()
+{
+  m_jumping = false;
+}
+
+bool RendererContext::isJumping() const
+{
+  return m_jumping;
+}
+
+bool RendererContext::isIdle() const
+{
+  return !m_jumping;
+}
+

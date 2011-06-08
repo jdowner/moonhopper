@@ -63,6 +63,11 @@ void Engine::update()
   updateMoonPositions();
   updateAvatarPosition();
   resolveCollisions();
+
+  if (m_context.isJumping())
+  {
+    m_context.idle();
+  }
 }
 
 void Engine::sleep()
