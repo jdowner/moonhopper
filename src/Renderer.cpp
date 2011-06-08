@@ -169,5 +169,17 @@ void Renderer::renderAvatar(const RendererContext& context) const
   glTranslatef(0.0, 0.5 * avatar.height + moon.r, 0.0);
   glScalef(avatar.height, avatar.height, avatar.height);
   glCallList(m_avatarDisplayList);
+  
+  // if avatar is jumping, draw ray
+  if (context.isJumping())
+  {
+    glDisable(GL_TEXTURE_2D);
+    glColor3ub(255,255,255);
+    glBegin(GL_LINES);
+    glVertex2f(0.0, 0.0);
+    glVertex2f(0.0, 1.0);
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+  }
   glPopMatrix();
 }

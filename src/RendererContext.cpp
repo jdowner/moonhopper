@@ -47,6 +47,11 @@ RendererContext::RendererContext()
 
   m_avatar.theta = 0.0;
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
+
+  m_ray.ox = 0.0;
+  m_ray.oy = 0.0;
+  m_ray.nx = 0.0;
+  m_ray.ny = 1.0;
 }
 
 const std::vector<Moon>& RendererContext::getMoons() const
@@ -79,6 +84,8 @@ void RendererContext::jump()
   // calculate the direction of the avatar
   m_jumping = true;
 
+  // Calculate the world space co-ordinates of the ray
+
   // ray cast from the avatar to the first moon or boundary:
   // (a) if a moon is hit, move the avatar to the nex moon
   // (b) if a boundary is hit recalculate the ray as if it had passed through
@@ -104,3 +111,7 @@ bool RendererContext::isIdle() const
   return !m_jumping;
 }
 
+const Ray& RendererContext::getRay() const
+{
+  return m_ray;
+}

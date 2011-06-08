@@ -60,14 +60,14 @@ void Engine::update()
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
   m_lastUpdate = glfwGetTime();
 
-  updateMoonPositions();
-  updateAvatarPosition();
-  resolveCollisions();
-
   if (m_context.isJumping())
   {
     m_context.idle();
   }
+
+  updateMoonPositions();
+  updateAvatarPosition();
+  resolveCollisions();
 }
 
 void Engine::sleep()
@@ -102,7 +102,7 @@ void Engine::updateAvatarPosition()
   {
     m_context.moveRight();
   }
-  else if (GLFW_RELEASE == glfwGetKey(GLFW_KEY_UP))
+  else if (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP))
   {
     m_context.jump();
   }
@@ -119,4 +119,3 @@ void Engine::resolveCollisions()
     }
   }
 }
-

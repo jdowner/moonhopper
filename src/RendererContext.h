@@ -26,6 +26,8 @@ class RendererContext
     bool isJumping() const;
     bool isIdle() const;
 
+    const Ray& getRay() const;
+
   private:
     std::vector<Moon> m_moons;
     Avatar m_avatar;
