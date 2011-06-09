@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 #include "DataStore.h"
+#include "Ray.h"
 
 namespace
 {
@@ -15,7 +16,7 @@ RendererContext::RendererContext()
 : m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
 , m_jumping(false)
 {
-  // For now we are just generating some random positions for th moons
+  // For now we are just generating some random positions for the moons
   
   const unsigned int NUM_MOONS = DataStore::get<int>("NumberOfMoons", 32);
   const double MIN_X = DataStore::get<double>("DomainMinX", -300.0);
@@ -47,7 +48,7 @@ RendererContext::RendererContext()
 
   m_avatar.theta = 0.0;
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
-  m_avatar.current = &m_moons.back();
+  m_avatar.moon = &m_moons.back();
 
   m_ray.ox = 0.0;
   m_ray.oy = 0.0;
@@ -86,6 +87,14 @@ void RendererContext::jump()
   m_jumping = true;
 
   // Calculate the world space co-ordinates of the ray
+  assert(m_avatar.moon);
+
+  const Moon& moon = *m_avatar.moon;
+  const double angle = moon.theta + m_avatar.theta + M_PI / 2.0;
+  m_ray.ox = moon.x + moon.r * cos(angle);
+  m_ray.oy = moon.y + moon.r * sin(angle);
+  m_ray.nx = cos(angle);
+  m_ray.ny = sin(angle);
 
   // ray cast from the avatar to the first moon or boundary:
   // (a) if a moon is hit, move the avatar to the nex moon

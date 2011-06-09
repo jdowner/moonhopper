@@ -7,7 +7,7 @@ struct Avatar
 {
   double theta;
   double height;
-  Moon* current;
+  Moon* moon;
 };
 
 #endif // AVATAR_H

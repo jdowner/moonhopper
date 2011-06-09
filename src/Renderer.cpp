@@ -161,7 +161,7 @@ void Renderer::renderGrid(const RendererContext& context) const
 void Renderer::renderAvatar(const RendererContext& context) const
 {
   const Avatar& avatar = context.getAvatar();
-  const Moon* moon = avatar.current;
+  const Moon* moon = avatar.moon;
   
   assert(moon);
 
@@ -171,17 +171,19 @@ void Renderer::renderAvatar(const RendererContext& context) const
   glTranslatef(0.0, moon->r, 0.0);
   glScalef(avatar.height, avatar.height, avatar.height);
   glCallList(m_avatarDisplayList);
+  glPopMatrix();
   
   // if avatar is jumping, draw ray
   if (context.isJumping())
-  {
+  { 
+    const Ray& ray = context.getRay();
+
     glDisable(GL_TEXTURE_2D);
     glColor3ub(255,0,255);
     glBegin(GL_LINES);
-    glVertex2f(0.0, 0.0);
-    glVertex2f(0.0, 10.0);
+    glVertex2f(ray.ox, ray.oy);
+    glVertex2f(ray.ox + 100.0 * ray.nx, ray.oy + 100.0 * ray.ny);
     glEnd();
     glEnable(GL_TEXTURE_2D);
   }
-  glPopMatrix();
 }
