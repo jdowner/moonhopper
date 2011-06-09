@@ -42,8 +42,6 @@ void DataStore::load(const std::string& filename)
       value = buffer.substr(index+1,buffer.size() - index);
 
       getInstance().m_data[key] = value;
-
-      std::clog << "loaded " << key << ": " << value << std::endl;
     }
   }
 
