@@ -10,6 +10,8 @@ set(SRC
   AnimationFrame.h
   ArgumentHandler.cpp
   ArgumentHandler.h
+  CollisionDetection.cpp
+  CollisionDetection.h
   CollisionResolution.cpp
   CollisionResolution.h
   DataStore.cpp
