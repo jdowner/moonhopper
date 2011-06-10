@@ -70,11 +70,19 @@ std::vector<Moon>& RendererContext::getMoons()
 void RendererContext::moveLeft()
 {
   m_avatar.theta += m_avatarAngularSpeed;
+  if (m_avatar.theta > 2.0 * M_PI)
+  {
+    m_avatar.theta -= 2.0 * M_PI;
+  }
 }
 
 void RendererContext::moveRight()
 {
   m_avatar.theta -= m_avatarAngularSpeed;
+  if (m_avatar.theta < 0.0)
+  {
+    m_avatar.theta += 2.0 * M_PI;
+  }
 }
 
 const Avatar& RendererContext::getAvatar() const

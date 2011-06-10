@@ -90,6 +90,10 @@ void Engine::updateMoonPositions()
     moon.x = m_domain.toX(moon.x + dt * moon.u);
     moon.y = m_domain.toY(moon.y + dt * moon.v);
     moon.theta += dt * moon.dtheta;
+    while(moon.theta > 2.0 * M_PI)
+    {
+      moon.theta -= 2.0 * M_PI;
+    }
   }
 }
 
