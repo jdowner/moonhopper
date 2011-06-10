@@ -58,7 +58,6 @@ void Engine::render()
 void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
-  m_lastUpdate = glfwGetTime();
 
   if (m_context.isJumping())
   {
@@ -68,6 +67,8 @@ void Engine::update()
   updateMoonPositions();
   updateAvatarPosition();
   resolveCollisions();
+  
+  m_lastUpdate = glfwGetTime();
 }
 
 void Engine::sleep()
@@ -94,6 +95,8 @@ void Engine::updateMoonPositions()
 
 void Engine::updateAvatarPosition()
 {
+  static double lastJump = 0.0;
+
   if (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT))
   {
     m_context.moveLeft();
@@ -104,7 +107,11 @@ void Engine::updateAvatarPosition()
   }
   else if (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP))
   {
-    m_context.jump();
+    if (glfwGetTime() > lastJump + 0.5)
+    {
+      m_context.jump();
+      lastJump = glfwGetTime();
+    }
   }
 }
   

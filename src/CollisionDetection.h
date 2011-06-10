@@ -6,9 +6,9 @@
 
 struct Intersection
 {
-  double x;
-  double y;
-  double t;
+  double x; // x co-ordinate of the interaction
+  double y; // y co-ordinate of the interaction
+  double t; // distance to the intersection point
 };
 
 bool intersectionRayMoon(const Ray& ray, const Moon& moon, Intersection& result);

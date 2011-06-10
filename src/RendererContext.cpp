@@ -3,6 +3,7 @@
 #include <cmath>
 #include "DataStore.h"
 #include "Ray.h"
+#include "CollisionDetection.h"
 
 namespace
 {
@@ -96,14 +97,28 @@ void RendererContext::jump()
   m_ray.nx = cos(angle);
   m_ray.ny = sin(angle);
 
-  // ray cast from the avatar to the first moon or boundary:
-  // (a) if a moon is hit, move the avatar to the nex moon
-  // (b) if a boundary is hit recalculate the ray as if it had passed through
-  //     the periodic boundary
-  // (c) if the ray has travelled its maximum distance, stop.
+  Intersection result;
+  result.t = 0.0;
+  size_t index = 0;
+  for (size_t i = 0; i < m_moons.size(); ++i)
+  {
+    Intersection current;
+    current.t = 0.0;
+    if (intersectionRayMoon(m_ray, m_moons[i], current))
+    {
+      if ((result.t == 0.0) || (current.t < result.t))
+      {
+        result = current;
+        index = i;
+      }
+    }
+  }
 
-  // If the ray hits a moon, determine the location on the surface of the moon
-  // where the intersection occurred and reset the avatar.
+  // If the ray intersects with a moon, move the avatar to it
+  if (result.t > 0.0)
+  {
+    m_avatar.moon = &m_moons[index];
+  }
 }
 
 void RendererContext::idle()
