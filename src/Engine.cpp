@@ -27,7 +27,9 @@ void Engine::init()
     throw std::runtime_error("Unable to initialize glfw");
   }
 
-  if (!glfwOpenWindow(600,600,0,0,0,0,0,0,GLFW_WINDOW))
+  const double height = m_domain.getHeight();
+  const double width = m_domain.getWidth();
+  if (!glfwOpenWindow(width,height,0,0,0,0,0,0,GLFW_WINDOW))
   {
     glfwTerminate();
     throw std::runtime_error("Unable to create window");

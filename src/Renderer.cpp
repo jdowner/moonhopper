@@ -15,11 +15,6 @@ namespace
 
   unsigned int createGridDisplayList()
   {
-    static const unsigned int NUM_X_LINES = 30;
-    static const unsigned int NUM_Y_LINES = 30;
-    static const double dx = 20.0;
-    static const double dy = 20.0;
-
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
@@ -35,18 +30,31 @@ namespace
     glVertex2f(-10.0,+10.0);
     glEnd();
 
+    const unsigned int NUM_X_LINES = 
+      DataStore::get<unsigned int>("NumGridLinesX", 30);
+    const unsigned int NUM_Y_LINES = 
+      DataStore::get<unsigned int>("NumGridLinesY", 30);
+
+    const double minX = DataStore::get<double>("DomainMinX", -300.0);
+    const double minY = DataStore::get<double>("DomainMinY", -300.0);
+    const double maxX = DataStore::get<double>("DomainMaxX", 300.0);
+    const double maxY = DataStore::get<double>("DomainMaxY", 300.0);
+    
+    const double dx = (maxX - minX) / (NUM_X_LINES + 1);
+    const double dy = (maxY - minY) / (NUM_Y_LINES + 1);
+    
     for (unsigned int i = 0; i < NUM_X_LINES; ++i)
     {
       glBegin(GL_LINES);
-      glVertex2f(i * dx - 300.0, -300.0);
-      glVertex2f(i * dx - 300.0, 300.0);
+      glVertex2f(i * dx + minX, minY);
+      glVertex2f(i * dx + minX, maxY);
       glEnd();
     }
     for (unsigned int i = 0; i < NUM_Y_LINES; ++i)
     {
       glBegin(GL_LINES);
-      glVertex2f(-300.0, i * dy - 300.0);
-      glVertex2f(300.0, i * dy - 300.0);
+      glVertex2f(minX, i * dy + minY);
+      glVertex2f(maxX, i * dy + minY);
       glEnd();
     }
     
@@ -110,11 +118,16 @@ void Renderer::init()
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
 
-  glViewport(0,0,600,600);
+  const double minX = DataStore::get<double>("DomainMinX", -300.0);
+  const double minY = DataStore::get<double>("DomainMinY", -300.0);
+  const double maxX = DataStore::get<double>("DomainMaxX", 300.0);
+  const double maxY = DataStore::get<double>("DomainMaxY", 300.0);
+
+  glViewport(0, 0, maxX - minX, maxY - minY);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  gluOrtho2D(-300,300,-300,300);
+  gluOrtho2D(minX, maxX, minY, maxY);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
