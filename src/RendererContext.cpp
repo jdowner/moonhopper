@@ -124,7 +124,7 @@ void RendererContext::jump()
     current.t = 0.0;
     if (intersectionRayMoon(m_ray, m_moons[i], current))
     {
-      if ((result.t == 0.0) || (current.t < result.t))
+      if ((result.t == 0.0) || (current.t > 0.0 && current.t < result.t))
       {
         result = current;
         index = i;
