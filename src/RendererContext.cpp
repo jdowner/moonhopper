@@ -46,6 +46,7 @@ RendererContext::RendererContext()
   {
     Moon moon;
     moon.r = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS) * uniform();
+    moon.m = M_PI * moon.r * moon.r;
     moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
     moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
     moon.theta = 2.0 * M_PI * uniform();

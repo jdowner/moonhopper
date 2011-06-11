@@ -36,9 +36,7 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, Co
     const double dv = moonB.v - moonA.v;
     if (du * dx + dv * dy <= 0.0)
     {
-      const double ma = M_PI * moonA.r * moonA.r;
-      const double mb = M_PI * moonB.r * moonB.r;
-      const double eff_mass = 2.0 * ma * mb / (ma + mb);
+      const double eff_mass = 2.0 * moonA.m * moonB.m / (moonA.m + moonB.m);
       const double ux = du * dx + dv * dy;
       const double xx = dx * dx + dy * dy;
       const double ix = eff_mass * (ux / xx) * dx;
@@ -47,10 +45,10 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, Co
 //      moonA.v += iy / ma;
 //      moonB.u -= ix / mb;
 //      moonB.v -= iy / mb;
-      resolution.impulseA.x = ix / ma;
-      resolution.impulseA.y = iy / ma;
-      resolution.impulseB.x = ix / mb;
-      resolution.impulseB.y = iy / mb;
+      resolution.impulseA.x = ix / moonA.m;
+      resolution.impulseA.y = iy / moonA.m;
+      resolution.impulseB.x = ix / moonB.m;
+      resolution.impulseB.y = iy / moonB.m;
       resolution.type = CollisionResolution::COLLISION;
     }
   }

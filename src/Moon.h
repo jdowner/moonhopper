@@ -13,6 +13,7 @@ struct Moon
   double r;
   double theta;
   double dtheta;
+  double m;
 };
 
 #endif // MOON_H
