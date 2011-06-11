@@ -35,7 +35,9 @@ RendererContext::RendererContext()
   const double MIN_Y = DataStore::get<double>("DomainMinY", -300.0);
   const double MAX_Y = DataStore::get<double>("DomainMaxY", 300.0);
   const double MAX_VELOCITY = DataStore::get<double>("MaxVelocity", 30.0);
-  const double MAX_ANGULARVELOCITY = 
+  const double MIN_ANGULAR_VELOCITY = 
+    DataStore::get<double>("MinAngularVelocity", -M_PI);
+  const double MAX_ANGULAR_VELOCITY = 
     DataStore::get<double>("MaxAngularVelocity", M_PI);
   const double MIN_RADIUS = DataStore::get<double>("MinMoonRadius", 5.0);
   const double MAX_RADIUS = DataStore::get<double>("MaxMoonRadius", 30.0);
@@ -47,7 +49,8 @@ RendererContext::RendererContext()
     moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
     moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
     moon.theta = 2.0 * M_PI * uniform();
-    moon.dtheta = M_PI * uniform();
+    moon.dtheta = MIN_ANGULAR_VELOCITY + 
+      (MAX_ANGULAR_VELOCITY - MIN_ANGULAR_VELOCITY) * uniform();
 
     const double vAngle = 2.0 * M_PI * uniform();
     const double vMagnitude = MAX_VELOCITY * uniform();

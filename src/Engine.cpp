@@ -53,8 +53,6 @@ bool Engine::running() const
 void Engine::render()
 { 
   m_renderer.render(m_context);
-
-  glfwSleep(0.01);
 }
 
 void Engine::update()
