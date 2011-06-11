@@ -1,4 +1,5 @@
 #include "CollisionResolution.h"
+#include <cmath>
 #include "Moon.h"
 #include "PeriodicDomain.h"
 
@@ -35,13 +36,17 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB)
     const double dv = moonB.v - moonA.v;
     if (du * dx + dv * dy <= 0.0)
     {
-      const double alpha = (du*dx+dv*dy) / (dx*dx+dy*dy);
-      const double nu = alpha * dx;
-      const double nv = alpha * dy;
-      moonA.u += nu;
-      moonA.v += nv;
-      moonB.u -= nu;
-      moonB.v -= nv;
+      const double ma = M_PI * moonA.r * moonA.r;
+      const double mb = M_PI * moonB.r * moonB.r;
+      const double eff_mass = 2.0 * ma * mb / (ma + mb);
+      const double ux = du * dx + dv * dy;
+      const double xx = dx * dx + dy * dy;
+      const double ix = eff_mass * (ux / xx) * dx;
+      const double iy = eff_mass * (ux / xx) * dy;
+      moonA.u += ix / ma;
+      moonA.v += iy / ma;
+      moonB.u -= ix / mb;
+      moonB.v -= iy / mb;
     }
   }
 }
