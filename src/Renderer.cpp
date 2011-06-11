@@ -31,9 +31,9 @@ namespace
     glEnd();
 
     const unsigned int NUM_X_LINES = 
-      DataStore::get<unsigned int>("NumGridLinesX", 30);
+      DataStore::get<unsigned int>("NumGridLinesX", 31);
     const unsigned int NUM_Y_LINES = 
-      DataStore::get<unsigned int>("NumGridLinesY", 30);
+      DataStore::get<unsigned int>("NumGridLinesY", 31);
 
     const double minX = DataStore::get<double>("DomainMinX", -300.0);
     const double minY = DataStore::get<double>("DomainMinY", -300.0);
