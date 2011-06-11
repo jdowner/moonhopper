@@ -1,6 +1,7 @@
 #include "RendererContext.h"
 #include <cstdlib>
 #include <cmath>
+#include <cassert>
 #include "DataStore.h"
 #include "Ray.h"
 #include "CollisionDetection.h"
@@ -10,6 +11,15 @@ namespace
   double uniform()
   {
     return double(rand()) / RAND_MAX;
+  }
+
+  double wrap(double lo, double hi, double x)
+  {
+    assert(lo < hi);
+    const double diff = hi - lo;
+    while (x < lo) x += diff;
+    while (x > hi) x -= diff;
+    return x;
   }
 }
 
@@ -125,7 +135,15 @@ void RendererContext::jump()
   // If the ray intersects with a moon, move the avatar to it
   if (result.t > 0.0)
   {
-    m_avatar.moon = &m_moons[index];
+    Moon& moon = m_moons[index];
+    m_avatar.moon = &moon;
+
+    const double rx = (result.x - moon.x)/moon.r;
+    const double ry = (result.y - moon.y)/moon.r;
+
+    const double theta = atan2(ry,rx);
+
+    m_avatar.theta = wrap(0.0, 2.0*M_PI, theta - moon.theta - M_PI / 2.0);
   }
 }
 
