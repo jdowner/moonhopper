@@ -126,7 +126,16 @@ void Engine::resolveCollisions()
   {
     for(size_t j = i + 1; j < moons.size(); ++j)
     {
-      elasticCollision(m_domain, moons[i], moons[j]);
+      CollisionResolution resolution;
+      elasticCollision(m_domain, moons[i], moons[j], resolution);
+
+      if (resolution.type == CollisionResolution::COLLISION)
+      {
+        moons[i].u += resolution.impulseA.x;
+        moons[i].v += resolution.impulseA.y;
+        moons[j].u -= resolution.impulseB.x;
+        moons[j].v -= resolution.impulseB.y;
+      }
     }
   }
 }

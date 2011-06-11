@@ -35,6 +35,8 @@ set(SRC
   TestUtils.h
   TextureManager.cpp
   TextureManager.h
+  Vector2d.cpp
+  Vector2d.h
 )
 
 include_directories(../tinyxml)

@@ -3,7 +3,7 @@
 #include "Moon.h"
 #include "PeriodicDomain.h"
 
-void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB)
+void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, CollisionResolution& resolution)
 {
   const double r = moonA.r + moonB.r;
 
@@ -43,10 +43,15 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB)
       const double xx = dx * dx + dy * dy;
       const double ix = eff_mass * (ux / xx) * dx;
       const double iy = eff_mass * (ux / xx) * dy;
-      moonA.u += ix / ma;
-      moonA.v += iy / ma;
-      moonB.u -= ix / mb;
-      moonB.v -= iy / mb;
+//      moonA.u += ix / ma;
+//      moonA.v += iy / ma;
+//      moonB.u -= ix / mb;
+//      moonB.v -= iy / mb;
+      resolution.impulseA.x = ix / ma;
+      resolution.impulseA.y = iy / ma;
+      resolution.impulseB.x = ix / mb;
+      resolution.impulseB.y = iy / mb;
+      resolution.type = CollisionResolution::COLLISION;
     }
   }
 }
