@@ -6,6 +6,8 @@
 #include "Avatar.h"
 #include "Ray.h"
 
+typedef std::vector<Moon> MoonList;
+
 /**
  *
  */
@@ -14,8 +16,10 @@ class RendererContext
   public:
     RendererContext();
 
-    const std::vector<Moon>& getMoons() const;
-    std::vector<Moon>& getMoons();
+    const MoonList& getMoons() const;
+    MoonList& getMoons();
+    void destroyMoon(Moon* moon);
+
     const Avatar& getAvatar() const;
 
     void moveLeft();
@@ -29,7 +33,8 @@ class RendererContext
     const Ray& getRay() const;
 
   private:
-    std::vector<Moon> m_moons;
+    
+    MoonList m_moons;
     Avatar m_avatar;
     const double m_avatarAngularSpeed;
     Ray m_ray;

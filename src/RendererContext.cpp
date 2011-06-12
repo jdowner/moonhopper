@@ -170,3 +170,7 @@ const Ray& RendererContext::getRay() const
 {
   return m_ray;
 }
+    
+void RendererContext::destroyMoon(Moon* moon)
+{
+}

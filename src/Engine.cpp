@@ -7,6 +7,7 @@
 #include <GL/glu.h>
 #include "DataStore.h"
 #include "CollisionResolution.h"
+#include "MathUtils.h"
 
 Engine::Engine() : 
   m_running(false), 
@@ -131,11 +132,39 @@ void Engine::resolveCollisions()
 
       if (resolution.type == CollisionResolution::COLLISION)
       {
-        moons[i].u += resolution.impulseA.x;
-        moons[i].v += resolution.impulseA.y;
-        moons[j].u -= resolution.impulseB.x;
-        moons[j].v -= resolution.impulseB.y;
+        moons[i].u += resolution.impulseA.x / moons[i].m;
+        moons[i].v += resolution.impulseA.y / moons[i].m;
+        moons[j].u -= resolution.impulseB.x / moons[j].m;
+        moons[j].v -= resolution.impulseB.y / moons[j].m;
+
+        checkForDestruction(moons[i], moons[j], resolution);
       }
     }
   }
 }
+    
+void Engine::checkForDestruction(
+  Moon& moonA, 
+  Moon& moonB, 
+  const CollisionResolution& resolution)
+{
+  const double impMagA = 
+    sqrt(dot(resolution.impulseA, resolution.impulseA));
+
+  const double impMagB = 
+    sqrt(dot(resolution.impulseB, resolution.impulseB));
+
+  if (impMagA > 100.0 * moonA.m && 
+    m_context.getAvatar().moon != &moonA)
+  {
+    m_context.destroyMoon(&moonA);
+  }
+
+  if (impMagB > 100.0 * moonB.m && 
+    m_context.getAvatar().moon != &moonB)
+  {
+    m_context.destroyMoon(&moonB);
+  }
+
+}
+

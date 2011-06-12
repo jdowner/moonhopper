@@ -19,6 +19,8 @@ set(SRC
   Engine.cpp
   Engine.h
   main.cpp
+  MathUtils.cpp
+  MathUtils.h
   Moon.cpp
   Moon.h
   PeriodicDomain.cpp
