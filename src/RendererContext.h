@@ -6,6 +6,22 @@
 #include "Avatar.h"
 #include "Ray.h"
 
+struct MoonOperation
+{
+  virtual ~MoonOperation(){}
+  virtual void begin() {}
+  virtual void execute(const Moon& moon) = 0;
+  virtual void end() {}
+};
+
+struct AvatarOperation
+{
+  virtual ~AvatarOperation(){}
+  virtual void begin() {}
+  virtual void execute(const Avatar& moon) = 0;
+  virtual void end() {}
+};
+
 typedef std::vector<Moon> MoonList;
 
 /**
@@ -21,6 +37,9 @@ class RendererContext
     void destroyMoon(Moon* moon);
 
     const Avatar& getAvatar() const;
+
+    void execute(MoonOperation& op) const;
+    void execute(AvatarOperation& op) const;
 
     void moveLeft();
     void moveRight();

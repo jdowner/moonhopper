@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
+#include <boost/foreach.hpp>
 #include "DataStore.h"
 #include "Ray.h"
 #include "CollisionDetection.h"
@@ -174,3 +175,21 @@ const Ray& RendererContext::getRay() const
 void RendererContext::destroyMoon(Moon* moon)
 {
 }
+    
+void RendererContext::execute(MoonOperation& op) const
+{
+  op.begin();
+  BOOST_FOREACH(const Moon& moon, m_moons)
+  {
+    op.execute(moon);
+  }
+  op.end();
+}
+
+void RendererContext::execute(AvatarOperation& op) const
+{
+  op.begin();
+  op.execute(m_avatar);
+  op.end();
+}
+

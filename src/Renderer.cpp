@@ -104,6 +104,71 @@ namespace
 
     return index;
   }
+
+  class RenderMoonOp : public MoonOperation
+  {
+    public:
+      RenderMoonOp(unsigned int displayList)
+      : m_displayList(displayList)
+      {
+      }
+
+      virtual void execute(const Moon& moon)
+      {
+        glPushMatrix();
+        glTranslatef(moon.x, moon.y, 0.0);
+        glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
+        glScalef(moon.r,moon.r,moon.r);
+        glCallList(m_displayList);
+        glPopMatrix();
+      }
+
+    private:
+      unsigned int m_displayList;
+  };
+
+  class RenderAvatarOp : public AvatarOperation
+  {
+    public:
+      RenderAvatarOp(const RendererContext& context, unsigned int displayList)
+      : m_context(context)
+      , m_displayList(displayList)
+      {
+      }
+
+      virtual void execute(const Avatar& avatar)
+      {
+        const Moon* moon = avatar.moon;
+
+        assert(moon);
+
+        glPushMatrix();
+        glTranslatef(moon->x, moon->y, 0.0);
+        glRotatef(rad2deg(moon->theta + avatar.theta), 0.0, 0.0, 1.0);
+        glTranslatef(0.0, moon->r, 0.0);
+        glScalef(avatar.height, avatar.height, avatar.height);
+        glCallList(m_displayList);
+        glPopMatrix();
+
+        // if avatar is jumping, draw ray
+        if (m_context.isJumping())
+        { 
+          const Ray& ray = m_context.getRay();
+
+          glDisable(GL_TEXTURE_2D);
+          glColor3ub(255,0,255);
+          glBegin(GL_LINES);
+          glVertex2f(ray.ox, ray.oy);
+          glVertex2f(ray.ox + 100.0 * ray.nx, ray.oy + 100.0 * ray.ny);
+          glEnd();
+          glEnable(GL_TEXTURE_2D);
+        }
+      }
+
+    private:
+      unsigned int m_displayList;
+      const RendererContext& m_context;
+  };
 }
 
 void Renderer::init()
@@ -155,15 +220,8 @@ void Renderer::render(const RendererContext& context) const
 
 void Renderer::renderMoons(const RendererContext& context) const
 {
-  BOOST_FOREACH(const Moon& moon, context.getMoons())
-  {
-    glPushMatrix();
-    glTranslatef(moon.x, moon.y, 0.0);
-    glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
-    glScalef(moon.r,moon.r,moon.r);
-    glCallList(m_moonDisplayList);
-    glPopMatrix();
-  }
+  RenderMoonOp op(m_moonDisplayList);
+  context.execute(op);
 }
 
 void Renderer::renderGrid(const RendererContext& context) const
@@ -173,30 +231,6 @@ void Renderer::renderGrid(const RendererContext& context) const
 
 void Renderer::renderAvatar(const RendererContext& context) const
 {
-  const Avatar& avatar = context.getAvatar();
-  const Moon* moon = avatar.moon;
-  
-  assert(moon);
-
-  glPushMatrix();
-  glTranslatef(moon->x, moon->y, 0.0);
-  glRotatef(rad2deg(moon->theta + avatar.theta), 0.0, 0.0, 1.0);
-  glTranslatef(0.0, moon->r, 0.0);
-  glScalef(avatar.height, avatar.height, avatar.height);
-  glCallList(m_avatarDisplayList);
-  glPopMatrix();
-  
-  // if avatar is jumping, draw ray
-  if (context.isJumping())
-  { 
-    const Ray& ray = context.getRay();
-
-    glDisable(GL_TEXTURE_2D);
-    glColor3ub(255,0,255);
-    glBegin(GL_LINES);
-    glVertex2f(ray.ox, ray.oy);
-    glVertex2f(ray.ox + 100.0 * ray.nx, ray.oy + 100.0 * ray.ny);
-    glEnd();
-    glEnable(GL_TEXTURE_2D);
-  }
+  RenderAvatarOp op(context, m_avatarDisplayList);
+  context.execute(op);
 }
