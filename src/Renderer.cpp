@@ -3,7 +3,7 @@
 #include <GL/glfw.h>
 #include <GL/glu.h>
 #include <cmath>
-#include "RendererContext.h"
+#include "Universe.h"
 #include "DataStore.h"
 
 namespace
@@ -130,8 +130,8 @@ namespace
   class RenderAvatarOp : public AvatarConstOperation
   {
     public:
-      RenderAvatarOp(const RendererContext& context, unsigned int displayList)
-      : m_context(context)
+      RenderAvatarOp(const Universe& universe, unsigned int displayList)
+      : m_universe(universe)
       , m_displayList(displayList)
       {
       }
@@ -151,9 +151,9 @@ namespace
         glPopMatrix();
 
         // if avatar is jumping, draw ray
-        if (m_context.isJumping())
+        if (m_universe.isJumping())
         { 
-          const Ray& ray = m_context.getRay();
+          const Ray& ray = m_universe.getRay();
 
           glDisable(GL_TEXTURE_2D);
           glColor3ub(255,0,255);
@@ -167,7 +167,7 @@ namespace
 
     private:
       unsigned int m_displayList;
-      const RendererContext& m_context;
+      const Universe& m_universe;
   };
 }
 
@@ -206,31 +206,31 @@ void Renderer::init()
   m_gridDisplayList = createGridDisplayList();
 }
 
-void Renderer::render(const RendererContext& context) const
+void Renderer::render(const Universe& universe) const
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   
-  renderGrid(context);
-  renderMoons(context);
-  renderAvatar(context);
+  renderGrid(universe);
+  renderMoons(universe);
+  renderAvatar(universe);
   
   glfwSwapBuffers();
 }
 
-void Renderer::renderMoons(const RendererContext& context) const
+void Renderer::renderMoons(const Universe& universe) const
 {
   RenderMoonOp op(m_moonDisplayList);
-  context.execute(op);
+  universe.execute(op);
 }
 
-void Renderer::renderGrid(const RendererContext& context) const
+void Renderer::renderGrid(const Universe& universe) const
 {
   glCallList(m_gridDisplayList);
 }
 
-void Renderer::renderAvatar(const RendererContext& context) const
+void Renderer::renderAvatar(const Universe& universe) const
 {
-  RenderAvatarOp op(context, m_avatarDisplayList);
-  context.execute(op);
+  RenderAvatarOp op(universe, m_avatarDisplayList);
+  universe.execute(op);
 }

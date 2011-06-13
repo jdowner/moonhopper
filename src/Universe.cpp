@@ -1,4 +1,4 @@
-#include "RendererContext.h"
+#include "Universe.h"
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
@@ -7,6 +7,7 @@
 #include "Ray.h"
 #include "CollisionDetection.h"
 #include "CollisionResolution.h"
+#include "UpdateContext.h"
 
 namespace
 {
@@ -25,7 +26,7 @@ namespace
   }
 }
 
-RendererContext::RendererContext()
+Universe::Universe()
 : m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
 , m_jumping(false)
 , m_domain(
@@ -78,7 +79,7 @@ RendererContext::RendererContext()
   m_ray.ny = 1.0;
 }
 
-void RendererContext::moveLeft()
+void Universe::moveLeft()
 {
   m_avatar.theta += m_avatarAngularSpeed;
   if (m_avatar.theta > 2.0 * M_PI)
@@ -87,7 +88,7 @@ void RendererContext::moveLeft()
   }
 }
 
-void RendererContext::moveRight()
+void Universe::moveRight()
 {
   m_avatar.theta -= m_avatarAngularSpeed;
   if (m_avatar.theta < 0.0)
@@ -96,12 +97,12 @@ void RendererContext::moveRight()
   }
 }
 
-const Avatar& RendererContext::getAvatar() const
+const Avatar& Universe::getAvatar() const
 {
   return m_avatar;
 }
 
-void RendererContext::jump()
+void Universe::jump()
 {
   // calculate the direction of the avatar
   m_jumping = true;
@@ -148,31 +149,31 @@ void RendererContext::jump()
   }
 }
 
-void RendererContext::idle()
+void Universe::idle()
 {
   m_jumping = false;
 }
 
-bool RendererContext::isJumping() const
+bool Universe::isJumping() const
 {
   return m_jumping;
 }
 
-bool RendererContext::isIdle() const
+bool Universe::isIdle() const
 {
   return !m_jumping;
 }
 
-const Ray& RendererContext::getRay() const
+const Ray& Universe::getRay() const
 {
   return m_ray;
 }
     
-void RendererContext::destroyMoon(Moon* moon)
+void Universe::destroyMoon(Moon* moon)
 {
 }
     
-void RendererContext::execute(MoonOperation& op)
+void Universe::execute(MoonOperation& op)
 {
   op.begin();
   BOOST_FOREACH(Moon& moon, m_moons)
@@ -182,7 +183,7 @@ void RendererContext::execute(MoonOperation& op)
   op.end();
 }
 
-void RendererContext::execute(MoonConstOperation& op) const
+void Universe::execute(MoonConstOperation& op) const
 {
   op.begin();
   BOOST_FOREACH(const Moon& moon, m_moons)
@@ -192,25 +193,26 @@ void RendererContext::execute(MoonConstOperation& op) const
   op.end();
 }
 
-void RendererContext::execute(AvatarConstOperation& op) const
+void Universe::execute(AvatarConstOperation& op) const
 {
   op.begin();
   op.execute(m_avatar);
   op.end();
 }
 
-void RendererContext::update(double dt)
+void Universe::update(const UpdateContext& context)
 {
   if (isJumping())
   {
     idle();
   }
 
-  updateMoonPositions(dt);
+  updateMoonPositions(context);
+  updateAvatarPosition(context);
   resolveCollisions();
 }
   
-void RendererContext::resolveCollisions()
+void Universe::resolveCollisions()
 {
   for(size_t i = 0; i < m_moons.size() - 1; ++i)
   {
@@ -230,8 +232,9 @@ void RendererContext::resolveCollisions()
   }
 }
 
-void RendererContext::updateMoonPositions(double dt)
+void Universe::updateMoonPositions(const UpdateContext& context)
 {
+  const double dt = 1.0 / context.frameRate;
   BOOST_FOREACH(Moon& moon, m_moons)
   {
     moon.x = m_domain.toX(moon.x + dt * moon.u);
@@ -240,6 +243,28 @@ void RendererContext::updateMoonPositions(double dt)
     while(moon.theta > 2.0 * M_PI)
     {
       moon.theta -= 2.0 * M_PI;
+    }
+  }
+}
+
+void Universe::updateAvatarPosition(const UpdateContext& context)
+{
+  static double lastJump = 0.0;
+
+  if (context.keyLeft)
+  {
+    moveLeft();
+  }
+  else if (context.keyRight)
+  {
+    moveRight();
+  }
+  else if (context.keyUp)
+  {
+    if (context.currentTime > lastJump + 0.5)
+    {
+      jump();
+      lastJump = context.currentTime;
     }
   }
 }

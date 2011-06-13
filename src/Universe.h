@@ -1,5 +1,5 @@
-#ifndef RENDERERCONTEXT_H
-#define RENDERERCONTEXT_H
+#ifndef UNIVERSE_H
+#define UNIVERSE_H
 
 #include <vector>
 #include "Moon.h"
@@ -33,13 +33,15 @@ struct AvatarConstOperation
 
 typedef std::vector<Moon> MoonList;
 
+struct UpdateContext;
+
 /**
  *
  */
-class RendererContext
+class Universe
 {
   public:
-    RendererContext();
+    Universe();
 
     void destroyMoon(Moon* moon);
 
@@ -49,7 +51,7 @@ class RendererContext
     void execute(MoonConstOperation& op) const;
     void execute(AvatarConstOperation& op) const;
 
-    void update(double dt);
+    void update(const UpdateContext& context);
 
     void moveLeft();
     void moveRight();
@@ -63,7 +65,8 @@ class RendererContext
 
   private:
     void resolveCollisions();
-    void updateMoonPositions(double dt);
+    void updateMoonPositions(const UpdateContext& context);
+    void updateAvatarPosition(const UpdateContext& context);
 
   private:
     PeriodicDomain m_domain;   
@@ -74,5 +77,5 @@ class RendererContext
     bool m_jumping;
 };
 
-#endif // RENDERERCONTEXT_H
+#endif // UNIVERSE_H
 

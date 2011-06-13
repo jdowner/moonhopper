@@ -3,7 +3,7 @@
 
 #include "TextureManager.h"
 
-class RendererContext;
+class Universe;
 
 /**
  *
@@ -12,12 +12,12 @@ class Renderer
 {
   public:
     void init();
-    void render(const RendererContext& context) const;
+    void render(const Universe& universe) const;
 
   private:
-    void renderMoons(const RendererContext& context) const;
-    void renderGrid(const RendererContext& context) const;
-    void renderAvatar(const RendererContext& context) const;
+    void renderMoons(const Universe& universe) const;
+    void renderGrid(const Universe& universe) const;
+    void renderAvatar(const Universe& universe) const;
 
   private:
     unsigned int m_moonDisplayList;

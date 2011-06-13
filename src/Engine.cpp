@@ -8,6 +8,7 @@
 #include "DataStore.h"
 #include "CollisionResolution.h"
 #include "MathUtils.h"
+#include "UpdateContext.h"
 
 Engine::Engine() : 
   m_running(false), 
@@ -48,17 +49,27 @@ bool Engine::running() const
 
 void Engine::render()
 { 
-  m_renderer.render(m_context);
+  m_renderer.render(m_universe);
 }
 
 void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 
-  m_context.update(1.0 / m_frameRate);
-  updateAvatarPosition();
+  m_universe.update(createUpdateContext());
   
   m_lastUpdate = glfwGetTime();
+}
+    
+UpdateContext Engine::createUpdateContext() const
+{
+  UpdateContext context;
+  context.currentTime = glfwGetTime();
+  context.frameRate = m_frameRate;
+  context.keyLeft = (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT));
+  context.keyRight = (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT));
+  context.keyUp = (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP));
+  return context;
 }
 
 void Engine::sleep()
@@ -72,24 +83,3 @@ void Engine::sleep()
   }
 }
 
-void Engine::updateAvatarPosition()
-{
-  static double lastJump = 0.0;
-
-  if (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT))
-  {
-    m_context.moveLeft();
-  }
-  else if (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT))
-  {
-    m_context.moveRight();
-  }
-  else if (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP))
-  {
-    if (glfwGetTime() > lastJump + 0.5)
-    {
-      m_context.jump();
-      lastJump = glfwGetTime();
-    }
-  }
-}

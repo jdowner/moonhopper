@@ -2,9 +2,10 @@
 #define ENGINE_H
 
 #include "Renderer.h"
-#include "RendererContext.h"
+#include "Universe.h"
 #include "PeriodicDomain.h"
 #include "CollisionResolution.h"
+#include "UpdateContext.h"
 
 /**
  *
@@ -23,10 +24,10 @@ class Engine
     void sleep();
 
   private:
-    void updateAvatarPosition();
+    UpdateContext createUpdateContext() const;
 
   private:
-    RendererContext m_context;
+    Universe m_universe;
     Renderer m_renderer;
     bool m_running;
 

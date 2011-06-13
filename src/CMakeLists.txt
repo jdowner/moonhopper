@@ -27,8 +27,6 @@ set(SRC
   PeriodicDomain.h
   PeriodicDomain_TestSuite.cpp
   PeriodicDomain_TestSuite.h
-  RendererContext.cpp
-  RendererContext.h
   Renderer.cpp
   Renderer.h
   TestDriver.cpp
@@ -37,6 +35,9 @@ set(SRC
   TestUtils.h
   TextureManager.cpp
   TextureManager.h
+  UpdateContext.h
+  Universe.cpp
+  Universe.h
   Vector2d.cpp
   Vector2d.h
 )
