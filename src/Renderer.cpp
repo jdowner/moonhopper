@@ -105,7 +105,7 @@ namespace
     return index;
   }
 
-  class RenderMoonOp : public MoonOperation
+  class RenderMoonOp : public MoonConstOperation
   {
     public:
       RenderMoonOp(unsigned int displayList)
@@ -127,7 +127,7 @@ namespace
       unsigned int m_displayList;
   };
 
-  class RenderAvatarOp : public AvatarOperation
+  class RenderAvatarOp : public AvatarConstOperation
   {
     public:
       RenderAvatarOp(const RendererContext& context, unsigned int displayList)

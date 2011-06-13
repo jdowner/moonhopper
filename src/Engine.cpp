@@ -12,12 +12,7 @@
 Engine::Engine() : 
   m_running(false), 
   m_frameRate(30.0), 
-  m_lastUpdate(0),
-  m_domain(
-    DataStore::get<double>("DomainMinX", -300.0),
-    DataStore::get<double>("DomainMaxX", 300.0),
-    DataStore::get<double>("DomainMinY", -300.0),
-    DataStore::get<double>("DomainMaxY", 300.0))
+  m_lastUpdate(0)
 {
 }
 
@@ -28,8 +23,8 @@ void Engine::init()
     throw std::runtime_error("Unable to initialize glfw");
   }
 
-  const double height = m_domain.getHeight();
-  const double width = m_domain.getWidth();
+  const double height = DataStore::get<double>("WindowHeight", 800.0);
+  const double width = DataStore::get<double>("WindowWidth", 1000.0);
   if (!glfwOpenWindow(width,height,0,0,0,0,0,0,GLFW_WINDOW))
   {
     glfwTerminate();
@@ -60,14 +55,8 @@ void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 
-  if (m_context.isJumping())
-  {
-    m_context.idle();
-  }
-
-  updateMoonPositions();
+  m_context.update(1.0 / m_frameRate);
   updateAvatarPosition();
-  resolveCollisions();
   
   m_lastUpdate = glfwGetTime();
 }
@@ -80,21 +69,6 @@ void Engine::sleep()
   {
     glfwSleep(period - elapsed);
     elapsed = glfwGetTime() - m_lastUpdate;
-  }
-}
-    
-void Engine::updateMoonPositions()
-{
-  const double dt = 1.0 / m_frameRate;
-  BOOST_FOREACH(Moon& moon, m_context.getMoons())
-  {
-    moon.x = m_domain.toX(moon.x + dt * moon.u);
-    moon.y = m_domain.toY(moon.y + dt * moon.v);
-    moon.theta += dt * moon.dtheta;
-    while(moon.theta > 2.0 * M_PI)
-    {
-      moon.theta -= 2.0 * M_PI;
-    }
   }
 }
 
@@ -119,52 +93,3 @@ void Engine::updateAvatarPosition()
     }
   }
 }
-  
-void Engine::resolveCollisions()
-{
-  std::vector<Moon>& moons = m_context.getMoons();
-  for(size_t i = 0; i < moons.size() - 1; ++i)
-  {
-    for(size_t j = i + 1; j < moons.size(); ++j)
-    {
-      CollisionResolution resolution;
-      elasticCollision(m_domain, moons[i], moons[j], resolution);
-
-      if (resolution.type == CollisionResolution::COLLISION)
-      {
-        moons[i].u += resolution.impulseA.x / moons[i].m;
-        moons[i].v += resolution.impulseA.y / moons[i].m;
-        moons[j].u -= resolution.impulseB.x / moons[j].m;
-        moons[j].v -= resolution.impulseB.y / moons[j].m;
-
-        checkForDestruction(moons[i], moons[j], resolution);
-      }
-    }
-  }
-}
-    
-void Engine::checkForDestruction(
-  Moon& moonA, 
-  Moon& moonB, 
-  const CollisionResolution& resolution)
-{
-  const double impMagA = 
-    sqrt(dot(resolution.impulseA, resolution.impulseA));
-
-  const double impMagB = 
-    sqrt(dot(resolution.impulseB, resolution.impulseB));
-
-  if (impMagA > 100.0 * moonA.m && 
-    m_context.getAvatar().moon != &moonA)
-  {
-    m_context.destroyMoon(&moonA);
-  }
-
-  if (impMagB > 100.0 * moonB.m && 
-    m_context.getAvatar().moon != &moonB)
-  {
-    m_context.destroyMoon(&moonB);
-  }
-
-}
-

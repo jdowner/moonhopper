@@ -23,21 +23,12 @@ class Engine
     void sleep();
 
   private:
-    void updateMoonPositions();
     void updateAvatarPosition();
-    void resolveCollisions();
-
-    void checkForDestruction(Moon& moonA, Moon& moonB, const CollisionResolution& resolution);
 
   private:
     RendererContext m_context;
     Renderer m_renderer;
     bool m_running;
-
-    /**
-     * Defines a periodic domain that the moons move in
-     */
-    PeriodicDomain m_domain;
 
     /**
      * Defines the frequency (Hz) at which the updates are called.

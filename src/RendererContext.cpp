@@ -6,6 +6,7 @@
 #include "DataStore.h"
 #include "Ray.h"
 #include "CollisionDetection.h"
+#include "CollisionResolution.h"
 
 namespace
 {
@@ -27,6 +28,11 @@ namespace
 RendererContext::RendererContext()
 : m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
 , m_jumping(false)
+, m_domain(
+    DataStore::get<double>("DomainMinX", -300.0),
+    DataStore::get<double>("DomainMaxX", 300.0),
+    DataStore::get<double>("DomainMinY", -300.0),
+    DataStore::get<double>("DomainMaxY", 300.0))
 {
   // For now we are just generating some random positions for the moons
   
@@ -70,16 +76,6 @@ RendererContext::RendererContext()
   m_ray.oy = 0.0;
   m_ray.nx = 0.0;
   m_ray.ny = 1.0;
-}
-
-const std::vector<Moon>& RendererContext::getMoons() const
-{
-  return m_moons;
-}
-
-std::vector<Moon>& RendererContext::getMoons()
-{
-  return m_moons;
 }
 
 void RendererContext::moveLeft()
@@ -176,7 +172,17 @@ void RendererContext::destroyMoon(Moon* moon)
 {
 }
     
-void RendererContext::execute(MoonOperation& op) const
+void RendererContext::execute(MoonOperation& op)
+{
+  op.begin();
+  BOOST_FOREACH(Moon& moon, m_moons)
+  {
+    op.execute(moon);
+  }
+  op.end();
+}
+
+void RendererContext::execute(MoonConstOperation& op) const
 {
   op.begin();
   BOOST_FOREACH(const Moon& moon, m_moons)
@@ -186,10 +192,56 @@ void RendererContext::execute(MoonOperation& op) const
   op.end();
 }
 
-void RendererContext::execute(AvatarOperation& op) const
+void RendererContext::execute(AvatarConstOperation& op) const
 {
   op.begin();
   op.execute(m_avatar);
   op.end();
 }
+
+void RendererContext::update(double dt)
+{
+  if (isJumping())
+  {
+    idle();
+  }
+
+  updateMoonPositions(dt);
+  resolveCollisions();
+}
+  
+void RendererContext::resolveCollisions()
+{
+  for(size_t i = 0; i < m_moons.size() - 1; ++i)
+  {
+    for(size_t j = i + 1; j < m_moons.size(); ++j)
+    {
+      CollisionResolution resolution;
+      elasticCollision(m_domain, m_moons[i], m_moons[j], resolution);
+
+      if (resolution.type == CollisionResolution::COLLISION)
+      {
+        m_moons[i].u += resolution.impulseA.x / m_moons[i].m;
+        m_moons[i].v += resolution.impulseA.y / m_moons[i].m;
+        m_moons[j].u -= resolution.impulseB.x / m_moons[j].m;
+        m_moons[j].v -= resolution.impulseB.y / m_moons[j].m;
+      }
+    }
+  }
+}
+
+void RendererContext::updateMoonPositions(double dt)
+{
+  BOOST_FOREACH(Moon& moon, m_moons)
+  {
+    moon.x = m_domain.toX(moon.x + dt * moon.u);
+    moon.y = m_domain.toY(moon.y + dt * moon.v);
+    moon.theta += dt * moon.dtheta;
+    while(moon.theta > 2.0 * M_PI)
+    {
+      moon.theta -= 2.0 * M_PI;
+    }
+  }
+}
+
 
