@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
+#include <set>
 #include <boost/foreach.hpp>
 #include "DataStore.h"
 #include "Ray.h"
@@ -169,10 +170,6 @@ const Ray& Universe::getRay() const
   return m_ray;
 }
     
-void Universe::destroyMoon(Moon* moon)
-{
-}
-    
 void Universe::execute(MoonOperation& op)
 {
   op.begin();
@@ -214,6 +211,8 @@ void Universe::update(const UpdateContext& context)
   
 void Universe::resolveCollisions()
 {
+  std::set<size_t> markedForDestruction;
+
   for(size_t i = 0; i < m_moons.size() - 1; ++i)
   {
     for(size_t j = i + 1; j < m_moons.size(); ++j)
@@ -227,9 +226,24 @@ void Universe::resolveCollisions()
         m_moons[i].v += resolution.impulseA.y / m_moons[i].m;
         m_moons[j].u -= resolution.impulseB.x / m_moons[j].m;
         m_moons[j].v -= resolution.impulseB.y / m_moons[j].m;
+   
+        if (shouldDestroyMoon(i, resolution.impulseA))
+        {
+          markedForDestruction.insert(i);
+        }
+   
+        if (shouldDestroyMoon(j, resolution.impulseB))
+        {
+          markedForDestruction.insert(j);
+        }
       }
     }
   }
+}
+
+bool Universe::shouldDestroyMoon(size_t i, const Vector2d& impulse) const
+{
+  return false;
 }
 
 void Universe::updateMoonPositions(const UpdateContext& context)

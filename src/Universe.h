@@ -6,6 +6,7 @@
 #include "Avatar.h"
 #include "Ray.h"
 #include "PeriodicDomain.h"
+#include "Vector2d.h"
 
 struct MoonOperation
 {
@@ -34,6 +35,7 @@ struct AvatarConstOperation
 typedef std::vector<Moon> MoonList;
 
 struct UpdateContext;
+struct CollisionResolution;
 
 /**
  *
@@ -42,8 +44,6 @@ class Universe
 {
   public:
     Universe();
-
-    void destroyMoon(Moon* moon);
 
     const Avatar& getAvatar() const;
 
@@ -67,6 +67,7 @@ class Universe
     void resolveCollisions();
     void updateMoonPositions(const UpdateContext& context);
     void updateAvatarPosition(const UpdateContext& context);
+    bool shouldDestroyMoon(size_t i, const Vector2d& impulse) const;
 
   private:
     PeriodicDomain m_domain;   
