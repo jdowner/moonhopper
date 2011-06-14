@@ -68,6 +68,7 @@ class Universe
     void updateMoonPositions(const UpdateContext& context);
     void updateAvatarPosition(const UpdateContext& context);
     bool shouldDestroyMoon(size_t i, const Vector2d& impulse) const;
+    void destroyMoon(size_t index);
 
   private:
     PeriodicDomain m_domain;   

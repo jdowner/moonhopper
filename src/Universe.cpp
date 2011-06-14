@@ -1,5 +1,6 @@
 #include "Universe.h"
 #include <cstdlib>
+#include <iostream>
 #include <cmath>
 #include <cassert>
 #include <set>
@@ -9,6 +10,7 @@
 #include "CollisionDetection.h"
 #include "CollisionResolution.h"
 #include "UpdateContext.h"
+#include "MathUtils.h"
 
 namespace
 {
@@ -220,6 +222,7 @@ void Universe::resolveCollisions()
       CollisionResolution resolution;
       elasticCollision(m_domain, m_moons[i], m_moons[j], resolution);
 
+
       if (resolution.type == CollisionResolution::COLLISION)
       {
         m_moons[i].u += resolution.impulseA.x / m_moons[i].m;
@@ -239,11 +242,25 @@ void Universe::resolveCollisions()
       }
     }
   }
+
+  // Iterate through the moons marked for destruction and destroy them
+  for (std::set<size_t>::const_iterator it = markedForDestruction.begin();
+    it != markedForDestruction.end(); ++it)
+  {
+    destroyMoon(*it);
+  }
 }
 
 bool Universe::shouldDestroyMoon(size_t i, const Vector2d& impulse) const
 {
-  return false;
+  const double magnitude = sqrt(dot(impulse,impulse));
+  return (magnitude > 2.0 * m_moons[i].r * m_moons[i].m);
+}
+
+void Universe::destroyMoon(size_t index)
+{
+  std::swap(m_moons[index], m_moons[m_moons.size() - 1]);
+  m_moons.resize(m_moons.size() - 1);
 }
 
 void Universe::updateMoonPositions(const UpdateContext& context)
