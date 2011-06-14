@@ -31,7 +31,6 @@ namespace
 
 Universe::Universe()
 : m_avatarAngularSpeed(DataStore::get<double>("AvatarAngularSpeed", 0.05))
-, m_jumping(false)
 , m_domain(
     DataStore::get<double>("DomainMinX", -300.0),
     DataStore::get<double>("DomainMaxX", 300.0),
@@ -75,11 +74,12 @@ Universe::Universe()
   m_avatar.theta = 0.0;
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
   m_avatar.moon = &m_moons.back();
+  m_avatar.isJumping = false;
 
-  m_ray.ox = 0.0;
-  m_ray.oy = 0.0;
-  m_ray.nx = 0.0;
-  m_ray.ny = 1.0;
+  m_avatar.up.ox = 0.0;
+  m_avatar.up.oy = 0.0;
+  m_avatar.up.nx = 0.0;
+  m_avatar.up.ny = 1.0;
 }
 
 void Universe::moveLeft()
@@ -108,17 +108,17 @@ const Avatar& Universe::getAvatar() const
 void Universe::jump()
 {
   // calculate the direction of the avatar
-  m_jumping = true;
+  m_avatar.isJumping = true;
 
   // Calculate the world space co-ordinates of the ray
   assert(m_avatar.moon);
 
   const Moon& moon = *m_avatar.moon;
   const double angle = moon.theta + m_avatar.theta + M_PI / 2.0;
-  m_ray.ox = moon.x + moon.r * cos(angle);
-  m_ray.oy = moon.y + moon.r * sin(angle);
-  m_ray.nx = cos(angle);
-  m_ray.ny = sin(angle);
+  m_avatar.up.ox = moon.x + moon.r * cos(angle);
+  m_avatar.up.oy = moon.y + moon.r * sin(angle);
+  m_avatar.up.nx = cos(angle);
+  m_avatar.up.ny = sin(angle);
 
   Intersection result;
   result.t = 0.0;
@@ -127,7 +127,7 @@ void Universe::jump()
   {
     Intersection current;
     current.t = 0.0;
-    if (intersectionRayMoon(m_ray, m_moons[i], current))
+    if (intersectionRayMoon(m_avatar.up, m_moons[i], current))
     {
       if ((result.t == 0.0) || (current.t > 0.0 && current.t < result.t))
       {
@@ -154,22 +154,17 @@ void Universe::jump()
 
 void Universe::idle()
 {
-  m_jumping = false;
+  m_avatar.isJumping = false;
 }
 
 bool Universe::isJumping() const
 {
-  return m_jumping;
+  return m_avatar.isJumping;
 }
 
 bool Universe::isIdle() const
 {
-  return !m_jumping;
-}
-
-const Ray& Universe::getRay() const
-{
-  return m_ray;
+  return !m_avatar.isJumping;
 }
     
 void Universe::execute(MoonOperation& op)

@@ -130,9 +130,8 @@ namespace
   class RenderAvatarOp : public AvatarConstOperation
   {
     public:
-      RenderAvatarOp(const Universe& universe, unsigned int displayList)
-      : m_universe(universe)
-      , m_displayList(displayList)
+      RenderAvatarOp(unsigned int displayList)
+      : m_displayList(displayList)
       {
       }
 
@@ -151,9 +150,9 @@ namespace
         glPopMatrix();
 
         // if avatar is jumping, draw ray
-        if (m_universe.isJumping())
+        if (avatar.isJumping)
         { 
-          const Ray& ray = m_universe.getRay();
+          const Ray& ray = avatar.up;
 
           glDisable(GL_TEXTURE_2D);
           glColor3ub(255,0,255);
@@ -167,7 +166,6 @@ namespace
 
     private:
       unsigned int m_displayList;
-      const Universe& m_universe;
   };
 }
 
@@ -231,6 +229,6 @@ void Renderer::renderGrid(const Universe& universe) const
 
 void Renderer::renderAvatar(const Universe& universe) const
 {
-  RenderAvatarOp op(universe, m_avatarDisplayList);
+  RenderAvatarOp op(m_avatarDisplayList);
   universe.execute(op);
 }

@@ -61,8 +61,6 @@ class Universe
     bool isJumping() const;
     bool isIdle() const;
 
-    const Ray& getRay() const;
-
   private:
     void resolveCollisions();
     void updateMoonPositions(const UpdateContext& context);
@@ -75,8 +73,6 @@ class Universe
     MoonList m_moons;
     Avatar m_avatar;
     const double m_avatarAngularSpeed;
-    Ray m_ray;
-    bool m_jumping;
 };
 
 #endif // UNIVERSE_H
