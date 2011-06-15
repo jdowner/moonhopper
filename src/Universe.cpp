@@ -1,5 +1,6 @@
 #include "Universe.h"
 #include <cstdlib>
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -54,32 +55,41 @@ Universe::Universe()
 
   for (unsigned int i = 0; i < NUM_MOONS; ++i)
   {
-    Moon moon;
-    moon.r = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS) * uniform();
-    moon.m = M_PI * moon.r * moon.r;
-    moon.x = MIN_X + (MAX_X - MIN_X) * uniform();
-    moon.y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
-    moon.theta = 2.0 * M_PI * uniform();
-    moon.dtheta = MIN_ANGULAR_VELOCITY + 
+    Moon* moon = new Moon;
+
+    moon->r = MIN_RADIUS + (MAX_RADIUS - MIN_RADIUS) * uniform();
+    moon->m = M_PI * moon->r * moon->r;
+    moon->x = MIN_X + (MAX_X - MIN_X) * uniform();
+    moon->y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
+    moon->theta = 2.0 * M_PI * uniform();
+    moon->dtheta = MIN_ANGULAR_VELOCITY + 
       (MAX_ANGULAR_VELOCITY - MIN_ANGULAR_VELOCITY) * uniform();
 
     const double vAngle = 2.0 * M_PI * uniform();
     const double vMagnitude = MAX_VELOCITY * uniform();
-    moon.u = vMagnitude * cos(vAngle);
-    moon.v = vMagnitude * sin(vAngle);
+    moon->u = vMagnitude * cos(vAngle);
+    moon->v = vMagnitude * sin(vAngle);
 
     m_moons.push_back(moon);
   }
 
   m_avatar.theta = 0.0;
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
-  m_avatar.moon = &m_moons.back();
+  m_avatar.moon = m_moons.back();
   m_avatar.isJumping = false;
 
   m_avatar.up.ox = 0.0;
   m_avatar.up.oy = 0.0;
   m_avatar.up.nx = 0.0;
   m_avatar.up.ny = 1.0;
+}
+
+Universe::~Universe()
+{
+  BOOST_FOREACH(Moon* moon, m_moons)
+  {
+    delete moon;
+  }
 }
 
 void Universe::moveLeft()
@@ -122,17 +132,17 @@ void Universe::jump()
 
   Intersection result;
   result.t = 0.0;
-  size_t index = 0;
-  for (size_t i = 0; i < m_moons.size(); ++i)
+  Moon* target = NULL;
+  for (MoonList::iterator i = m_moons.begin(); i != m_moons.end(); ++i)
   {
     Intersection current;
     current.t = 0.0;
-    if (intersectionRayMoon(m_avatar.up, m_moons[i], current))
+    if (intersectionRayMoon(m_avatar.up, **i, current))
     {
       if ((result.t == 0.0) || (current.t > 0.0 && current.t < result.t))
       {
         result = current;
-        index = i;
+        target = *i;
       }
     }
   }
@@ -140,15 +150,14 @@ void Universe::jump()
   // If the ray intersects with a moon, move the avatar to it
   if (result.t > 0.0)
   {
-    Moon& moon = m_moons[index];
-    m_avatar.moon = &moon;
+    m_avatar.moon = target;
 
-    const double rx = (result.x - moon.x)/moon.r;
-    const double ry = (result.y - moon.y)/moon.r;
+    const double rx = (result.x - target->x)/target->r;
+    const double ry = (result.y - target->y)/target->r;
 
     const double theta = atan2(ry,rx);
 
-    m_avatar.theta = wrap(0.0, 2.0*M_PI, theta - moon.theta - M_PI / 2.0);
+    m_avatar.theta = wrap(0.0, 2.0*M_PI, theta - target->theta - M_PI / 2.0);
   }
 }
 
@@ -170,9 +179,9 @@ bool Universe::isIdle() const
 void Universe::execute(MoonOperation& op)
 {
   op.begin();
-  BOOST_FOREACH(Moon& moon, m_moons)
+  BOOST_FOREACH(Moon* moon, m_moons)
   {
-    op.execute(moon);
+    op.execute(*moon);
   }
   op.end();
 }
@@ -180,9 +189,9 @@ void Universe::execute(MoonOperation& op)
 void Universe::execute(MoonConstOperation& op) const
 {
   op.begin();
-  BOOST_FOREACH(const Moon& moon, m_moons)
+  BOOST_FOREACH(const Moon* moon, m_moons)
   {
-    op.execute(moon);
+    op.execute(*moon);
   }
   op.end();
 }
@@ -208,67 +217,77 @@ void Universe::update(const UpdateContext& context)
   
 void Universe::resolveCollisions()
 {
-  std::set<size_t> markedForDestruction;
+  std::set<Moon*> markedForDestruction;
 
-  for(size_t i = 0; i < m_moons.size() - 1; ++i)
+  for (MoonList::iterator i = m_moons.begin(); i != m_moons.end(); ++i)
   {
-    for(size_t j = i + 1; j < m_moons.size(); ++j)
+    for (MoonList::iterator j = i; j != m_moons.end(); ++j)
     {
-      CollisionResolution resolution;
-      elasticCollision(m_domain, m_moons[i], m_moons[j], resolution);
+      if (i == j) continue;
 
+      Moon& moonA = **i;
+      Moon& moonB = **j;
+      
+      CollisionResolution resolution;
+      elasticCollision(m_domain, moonA, moonB, resolution);
 
       if (resolution.type == CollisionResolution::COLLISION)
       {
-        m_moons[i].u += resolution.impulseA.x / m_moons[i].m;
-        m_moons[i].v += resolution.impulseA.y / m_moons[i].m;
-        m_moons[j].u -= resolution.impulseB.x / m_moons[j].m;
-        m_moons[j].v -= resolution.impulseB.y / m_moons[j].m;
+        moonA.u += resolution.impulseA.x / moonA.m;
+        moonA.v += resolution.impulseA.y / moonA.m;
+        moonB.u -= resolution.impulseB.x / moonB.m;
+        moonB.v -= resolution.impulseB.y / moonB.m;
    
-        if (shouldDestroyMoon(i, resolution.impulseA))
+        if (shouldDestroyMoon(moonA, resolution.impulseA))
         {
-          markedForDestruction.insert(i);
+          markedForDestruction.insert(&moonA);
         }
    
-        if (shouldDestroyMoon(j, resolution.impulseB))
+        if (shouldDestroyMoon(moonB, resolution.impulseB))
         {
-          markedForDestruction.insert(j);
+          markedForDestruction.insert(&moonB);
         }
       }
     }
   }
 
   // Iterate through the moons marked for destruction and destroy them
-  for (std::set<size_t>::const_iterator it = markedForDestruction.begin();
+  for (std::set<Moon*>::const_iterator it = markedForDestruction.begin();
     it != markedForDestruction.end(); ++it)
   {
     destroyMoon(*it);
   }
 }
 
-bool Universe::shouldDestroyMoon(size_t i, const Vector2d& impulse) const
+bool Universe::shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) const
 {
   const double magnitude = sqrt(dot(impulse,impulse));
-  return (magnitude > 2.0 * m_moons[i].r * m_moons[i].m);
+  return !isAvatarOnThisMoon(moon) && 
+    (magnitude > 2.0 * moon.r * moon.m);
 }
 
-void Universe::destroyMoon(size_t index)
+bool Universe::isAvatarOnThisMoon(const Moon& moon) const
 {
-  std::swap(m_moons[index], m_moons[m_moons.size() - 1]);
-  m_moons.resize(m_moons.size() - 1);
+  return (m_avatar.moon == &moon);
+}
+
+void Universe::destroyMoon(Moon* moon)
+{
+  m_moons.erase(std::find(m_moons.begin(), m_moons.end(), moon));
+  delete moon;
 }
 
 void Universe::updateMoonPositions(const UpdateContext& context)
 {
   const double dt = 1.0 / context.frameRate;
-  BOOST_FOREACH(Moon& moon, m_moons)
+  BOOST_FOREACH(Moon* moon, m_moons)
   {
-    moon.x = m_domain.toX(moon.x + dt * moon.u);
-    moon.y = m_domain.toY(moon.y + dt * moon.v);
-    moon.theta += dt * moon.dtheta;
-    while(moon.theta > 2.0 * M_PI)
+    moon->x = m_domain.toX(moon->x + dt * moon->u);
+    moon->y = m_domain.toY(moon->y + dt * moon->v);
+    moon->theta += dt * moon->dtheta;
+    while(moon->theta > 2.0 * M_PI)
     {
-      moon.theta -= 2.0 * M_PI;
+      moon->theta -= 2.0 * M_PI;
     }
   }
 }

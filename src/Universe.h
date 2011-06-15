@@ -1,7 +1,7 @@
 #ifndef UNIVERSE_H
 #define UNIVERSE_H
 
-#include <vector>
+#include <list>
 #include "Moon.h"
 #include "Avatar.h"
 #include "Ray.h"
@@ -32,7 +32,7 @@ struct AvatarConstOperation
   virtual void end() {}
 };
 
-typedef std::vector<Moon> MoonList;
+typedef std::list<Moon*> MoonList;
 
 struct UpdateContext;
 struct CollisionResolution;
@@ -44,6 +44,7 @@ class Universe
 {
   public:
     Universe();
+    ~Universe();
 
     const Avatar& getAvatar() const;
 
@@ -60,13 +61,14 @@ class Universe
 
     bool isJumping() const;
     bool isIdle() const;
+    bool isAvatarOnThisMoon(const Moon& moon) const;
 
   private:
     void resolveCollisions();
     void updateMoonPositions(const UpdateContext& context);
     void updateAvatarPosition(const UpdateContext& context);
-    bool shouldDestroyMoon(size_t i, const Vector2d& impulse) const;
-    void destroyMoon(size_t index);
+    bool shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) const;
+    void destroyMoon(Moon* moon);
 
   private:
     PeriodicDomain m_domain;   
