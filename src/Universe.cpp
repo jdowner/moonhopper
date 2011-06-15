@@ -263,7 +263,7 @@ bool Universe::shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) cons
 {
   const double magnitude = sqrt(dot(impulse,impulse));
   return !isAvatarOnThisMoon(moon) && 
-    (magnitude > 5.0 * moon.r * moon.m);
+    (magnitude > DataStore::get<double>("DestructionSpeed", 2.0) * moon.r * moon.m);
 }
 
 bool Universe::isAvatarOnThisMoon(const Moon& moon) const
