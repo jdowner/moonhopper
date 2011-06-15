@@ -263,7 +263,7 @@ bool Universe::shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) cons
 {
   const double magnitude = sqrt(dot(impulse,impulse));
   return !isAvatarOnThisMoon(moon) && 
-    (magnitude > 2.0 * moon.r * moon.m);
+    (magnitude > 5.0 * moon.r * moon.m);
 }
 
 bool Universe::isAvatarOnThisMoon(const Moon& moon) const
@@ -273,6 +273,64 @@ bool Universe::isAvatarOnThisMoon(const Moon& moon) const
 
 void Universe::destroyMoon(Moon* moon)
 {
+  static const double sqrt3 = sqrt(3.0);
+  if (moon->r > sqrt3 * DataStore::get<double>("MinMoonRadius", 5.0))
+  {
+    Vector2d origin;
+    origin.x = 0.0;
+    origin.y = 0.0;
+
+    {
+      Moon* newmoon = new Moon;
+      newmoon->x = moon->x;
+      newmoon->y = moon->y;
+      newmoon->r = moon->r / sqrt3;
+      newmoon->theta = moon->theta;
+      newmoon->dtheta = moon->dtheta;
+      newmoon->m = moon->m / 3.0;
+
+      Vector2d velocity;
+      velocity.x = moon->u;
+      velocity.y = moon->v;
+
+      Vector2d newVelocity = rotate(30.0, origin, velocity); 
+      newmoon->u = newVelocity.x;
+      newmoon->v = newVelocity.y;
+
+      m_moons.push_back(newmoon);
+    }
+    {
+      Moon* newmoon = new Moon;
+      newmoon->x = moon->x;
+      newmoon->y = moon->y;
+      newmoon->r = moon->r / sqrt3;
+      newmoon->u = moon->u;
+      newmoon->v = moon->v;
+      newmoon->theta = moon->theta;
+      newmoon->dtheta = moon->dtheta;
+      newmoon->m = moon->m / 3.0;
+      m_moons.push_back(newmoon);
+    }
+    {
+      Moon* newmoon = new Moon;
+      newmoon->x = moon->x;
+      newmoon->y = moon->y;
+      newmoon->r = moon->r / sqrt3;
+      newmoon->theta = moon->theta;
+      newmoon->dtheta = moon->dtheta;
+      newmoon->m = moon->m / 3.0;
+
+      Vector2d velocity;
+      velocity.x = moon->u;
+      velocity.y = moon->v;
+
+      Vector2d newVelocity = rotate(-30.0, origin, velocity); 
+      newmoon->u = newVelocity.x;
+      newmoon->v = newVelocity.y;
+
+      m_moons.push_back(newmoon);
+    }
+  }
   m_moons.erase(std::find(m_moons.begin(), m_moons.end(), moon));
   delete moon;
 }
