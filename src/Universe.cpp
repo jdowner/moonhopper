@@ -176,6 +176,11 @@ bool Universe::isIdle() const
   return !m_avatar.isJumping;
 }
     
+bool Universe::isHookExtant() const
+{
+  return m_hook;
+}
+
 void Universe::execute(MoonOperation& op)
 {
   op.begin();
@@ -210,12 +215,47 @@ void Universe::update(const UpdateContext& context)
     idle();
   }
 
+  updatePositions(context);
+  resolveCollisions();
+}
+
+void Universe::updatePositions(const UpdateContext& context)
+{
   updateMoonPositions(context);
   updateAvatarPosition(context);
-  resolveCollisions();
+  updateHookPosition(context);
 }
   
 void Universe::resolveCollisions()
+{
+  resolveMoonCollisions();
+  resolveHookCollisions();
+}
+
+void Universe::resolveHookCollisions()
+{
+  if (isHookExtant())
+  {
+    for (MoonList::const_iterator i = m_moons.begin(); i != m_moons.end(); ++i)
+    {
+      if ((*i) == m_avatar.moon)
+      {
+        continue;
+      }
+
+      const double r = (*i)->r + m_hook->radius;
+      const double dx = m_hook->position.x - (*i)->x;
+      const double dy = m_hook->position.y - (*i)->y;
+      if (dx * dx + dy * dy < r * r)
+      {
+        m_hook.reset();
+        break;
+      }
+    }
+  }
+}
+
+void Universe::resolveMoonCollisions()
 {
   std::set<Moon*> markedForDestruction;
 
@@ -237,7 +277,10 @@ void Universe::resolveCollisions()
         moonA.v += resolution.impulseA.y / moonA.m;
         moonB.u -= resolution.impulseB.x / moonB.m;
         moonB.v -= resolution.impulseB.y / moonB.m;
-   
+
+        moonA.dtheta += resolution.angularImpulseA / (moonA.m * moonA.r * moonA.r);
+        moonB.dtheta -= resolution.angularImpulseB / (moonB.m * moonB.r * moonB.r);
+
         if (shouldDestroyMoon(moonA, resolution.impulseA))
         {
           markedForDestruction.insert(&moonA);
@@ -372,4 +415,42 @@ void Universe::updateAvatarPosition(const UpdateContext& context)
   }
 }
 
+void Universe::updateHookPosition(const UpdateContext& context)
+{
+  if (not isHookExtant())
+  {
+    if (context.keyH)
+    {
+      launchHook();
+    }
+  }
+  else
+  {
+    const double dt = 1.0 / context.frameRate;
+    m_hook->position.x += dt * m_hook->velocity.x;
+    m_hook->position.y += dt * m_hook->velocity.y;
+  }
+}
 
+void Universe::launchHook()
+{
+  assert(!isHookExtant());
+  assert(!isJumping());
+
+  const Moon& moon = *m_avatar.moon;
+  const double angle = moon.theta + m_avatar.theta + M_PI / 2.0;
+  const double speed = DataStore::get<double>("HookSpeed",10.0);
+
+  m_hook.reset(new Hook);
+  m_hook->position.x = moon.x + moon.r * cos(angle);
+  m_hook->position.y = moon.y + moon.r * sin(angle);
+  m_hook->velocity.x = speed * cos(angle);
+  m_hook->velocity.y = speed * sin(angle);
+  m_hook->angle = angle - M_PI / 2.0;
+  m_hook->radius = DataStore::get<double>("HookRadius",20.0);
+}
+
+const Hook& Universe::getHook() const
+{
+  return *m_hook;
+}

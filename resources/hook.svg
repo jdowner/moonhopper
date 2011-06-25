@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="hook.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="242.92761"
+     inkscape:cy="747.04207"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1440"
+     inkscape:window-height="900"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0">
+    <sodipodi:guide
+       orientation="0,1"
+       position="423.57143,975.71429"
+       id="guide3765" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="240,592.85714"
+       id="guide3780" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="reference"
+     sodipodi:insensitive="true">
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff9800;fill-opacity:0.33043476;stroke:#000000;stroke-opacity:0.35217393"
+       id="path3772"
+       sodipodi:cx="247.14285"
+       sodipodi:cy="315.93362"
+       sodipodi:rx="162.14285"
+       sodipodi:ry="153.57143"
+       d="m 409.28571,315.93362 a 162.14285,153.57143 0 1 1 -324.28571,0 162.14285,153.57143 0 1 1 324.28571,0 z"
+       transform="translate(-5.7142857,-23.571429)" />
+  </g>
+  <g
+     inkscape:label="prongs"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#ff9800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 214.06696,174.79075 c -24.56338,11.4032 -48.49806,35.04071 -64.625,66.84375 -26.28836,51.84175 -22.81308,107.54803 6.3125,131.6875 -17.02485,-28.35741 -16.87728,-71.65714 3.4375,-111.71875 14.77721,-29.1413 37.26071,-50.69997 61.09375,-61.46875 l -6.21875,-25.34375 z"
+       id="path2985"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/jdowner/projects/moonhopper/resources/hook.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path3763"
+       d="m 269.16073,174.79075 c 24.56338,11.4032 48.49806,35.04071 64.625,66.84375 26.28836,51.84175 22.81308,107.54803 -6.3125,131.6875 17.02485,-28.35741 16.87728,-71.65714 -3.4375,-111.71875 -14.77721,-29.1413 -37.26071,-50.69997 -61.09375,-61.46875 l 6.21875,-25.34375 z"
+       style="fill:#ff9800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/jdowner/projects/moonhopper/resources/hook.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#ff9800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 265.80662,148.94668 c 27.04018,1.49035 58.02947,14.57718 84.79223,38.14127 43.62567,38.41153 61.03803,91.44055 42.92963,124.65349 5.30611,-32.6471 -10.87437,-72.81028 -44.58685,-102.49345 -24.52287,-21.59191 -53.39401,-33.28555 -79.52077,-34.45724 l -3.61424,-25.84407 z"
+       id="path3767"
+       inkscape:export-filename="/home/jdowner/projects/moonhopper/resources/hook.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path3769"
+       d="m 218.47176,147.94668 c -27.04018,1.49035 -58.02947,14.57718 -84.79223,38.14127 -43.625667,38.41153 -61.038027,91.44055 -42.929627,124.65349 -5.30611,-32.6471 10.874367,-72.81028 44.586847,-102.49345 24.52287,-21.59191 53.39401,-33.28555 79.52077,-34.45724 l 3.61424,-25.84407 z"
+       style="fill:#ff9800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/jdowner/projects/moonhopper/resources/hook.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="body">
+    <path
+       style="fill:#ff9800;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 240,138.84375 c -1.78416,0 -3.53636,0.08 -5.21875,0.25 -1.68239,0.16997 -3.29778,0.42716 -4.84375,0.75 -1.54597,0.32284 -3.00008,0.7289 -4.375,1.1875 -1.37492,0.4586 -2.67453,0.98524 -3.84375,1.5625 -1.16922,0.57726 -2.22738,1.19618 -3.15625,1.875 -0.92887,0.67882 -1.72111,1.39298 -2.375,2.15625 -0.37202,0.43425 -0.56953,0.91776 -0.84375,1.375 -0.35279,1.38409 -0.72748,2.68278 -1.0625,4.125 -4.11266,17.7045 -6.9481,39.48567 -7.75,63.65625 13.41392,16.77977 23.03125,61.97488 23.03125,115.09375 0,5.23969 -0.0998,10.37169 -0.28125,15.4375 0.10157,0.12336 0.2105,0.22374 0.3125,0.34375 -11.03404,4.14851 -18.875,14.70695 -18.875,27.0625 0,9.56582 4.69388,18.04612 11.9375,23.3125 C 225.86902,390.78821 232.42454,386.5 240,386.5 c 7.57546,0 14.13098,4.28821 17.34375,10.53125 7.24362,-5.26638 11.9375,-13.74668 11.9375,-23.3125 0,-12.35555 -7.84096,-22.91399 -18.875,-27.0625 0.10199,-0.11998 0.21093,-0.22042 0.3125,-0.34375 -0.18141,-5.06581 -0.28125,-10.19781 -0.28125,-15.4375 0,-53.10227 9.59265,-98.30147 23,-115.09375 -0.80269,-24.16752 -3.61192,-45.95138 -7.71875,-63.65625 -0.33454,-1.44225 -0.7102,-2.74087 -1.0625,-4.125 -0.27422,-0.45724 -0.47173,-0.94075 -0.84375,-1.375 -0.65389,-0.76327 -1.44613,-1.47743 -2.375,-2.15625 -0.92887,-0.67882 -1.98703,-1.29774 -3.15625,-1.875 -1.16922,-0.57726 -2.46883,-1.1039 -3.84375,-1.5625 -1.37492,-0.4586 -2.82903,-0.86466 -4.375,-1.1875 -1.54597,-0.32284 -3.16136,-0.58003 -4.84375,-0.75 -1.68239,-0.16997 -3.43459,-0.25 -5.21875,-0.25 z"
+       id="path3791"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/jdowner/projects/moonhopper/resources/hook.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

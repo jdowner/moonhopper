@@ -105,6 +105,26 @@ namespace
     return index;
   }
 
+  unsigned int createHookDisplayList(const TextureManager& textures)
+  {
+    unsigned int index = glGenLists(1);
+    
+    glNewList(index, GL_COMPILE);
+
+    glBindTexture(GL_TEXTURE_2D, textures.getTextureHandle("hook"));
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(-0.5, 0.0);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(-0.5, 1.0);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(0.5, 1.0);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(0.5, 0.0);
+    glEnd();
+
+    glEndList();
+
+    return index;
+  }
+
   class RenderMoonOp : public MoonConstOperation
   {
     public:
@@ -198,9 +218,11 @@ void Renderer::init()
   
   m_textures.loadTexture(path + DataStore::get<std::string>("MoonImg"), "moon");
   m_textures.loadTexture(path + DataStore::get<std::string>("Avatar"), "avatar");
+  m_textures.loadTexture(path + DataStore::get<std::string>("Hook"), "hook");
 
   m_moonDisplayList = createMoonDisplayList(m_textures);
   m_avatarDisplayList = createAvatarDisplayList(m_textures);
+  m_hookDisplayList = createHookDisplayList(m_textures);
   m_gridDisplayList = createGridDisplayList();
 }
 
@@ -212,6 +234,7 @@ void Renderer::render(const Universe& universe) const
   renderGrid(universe);
   renderMoons(universe);
   renderAvatar(universe);
+  renderHook(universe);
   
   glfwSwapBuffers();
 }
@@ -231,4 +254,19 @@ void Renderer::renderAvatar(const Universe& universe) const
 {
   RenderAvatarOp op(m_avatarDisplayList);
   universe.execute(op);
+}
+    
+void Renderer::renderHook(const Universe& universe) const
+{
+  if (universe.isHookExtant())
+  {
+    const Hook& hook = universe.getHook();
+
+    glPushMatrix();
+    glTranslatef(hook.position.x, hook.position.y, 0.0);
+    glRotatef(rad2deg(hook.angle), 0.0, 0.0, 1.0);
+    glScalef(hook.radius, hook.radius, hook.radius);
+    glCallList(m_hookDisplayList);
+    glPopMatrix();
+  }
 }

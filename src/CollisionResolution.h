@@ -21,6 +21,8 @@ struct CollisionResolution
 
   Vector2d impulseA;
   Vector2d impulseB;
+  double angularImpulseA;
+  double angularImpulseB;
   Type type;
 };
 

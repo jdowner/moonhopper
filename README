@@ -29,3 +29,16 @@ had a strange situation with library locations on different machines, which was
 easiest to solve by including tinyxml in the source and compiling it into a
 shared library.
 
+
+TO RUN THE GAME
+
+To run the game from the top level directory,
+
+./bin/moonhopper --resources resources/ --config default.cfg
+
+The --resource flag specifies where the resources directory is relative to the
+binary executable. The --config flag specifies the configuration to use, which
+must be located in the resources directory although it can be named differently.
+The configuration file specifies many of the parameters that are used to
+customize the behavior of the game.
+

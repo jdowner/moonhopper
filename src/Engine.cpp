@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include <stdexcept>
+#include <iostream>
 #include <cassert>
 #include <cmath>
 #include <boost/foreach.hpp>
@@ -69,6 +70,8 @@ UpdateContext Engine::createUpdateContext() const
   context.keyLeft = (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT));
   context.keyRight = (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT));
   context.keyUp = (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP));
+  context.keyH = (GLFW_PRESS == glfwGetKey(72));
+
   return context;
 }
 

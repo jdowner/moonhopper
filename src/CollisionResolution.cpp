@@ -2,6 +2,16 @@
 #include <cmath>
 #include "Moon.h"
 #include "PeriodicDomain.h"
+#include "DataStore.h"
+
+namespace
+{
+  double sign(double value)
+  {
+    if (value == 0.0) return 0.0;
+    return (value < 0.0) ? -1.0 : 1.0;
+  }
+}
 
 void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, CollisionResolution& resolution)
 {
@@ -46,6 +56,19 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, Co
       resolution.impulseB.x = ix;
       resolution.impulseB.y = iy;
       resolution.type = CollisionResolution::COLLISION;
+
+      // currently assuming that collisions always happen at the very edge of
+      // the moons. This is wrong but it might be good enough.
+      const double radialVelocityA = moonA.r * moonA.dtheta;
+      const double radialVelocityB = moonB.r * moonB.dtheta;
+      const double tangentialVelocity = (du * dy - dv * dx) / sqrt(xx);
+      const double angularImpulse = 
+        radialVelocityA + radialVelocityB + tangentialVelocity;
+      const double friction = DataStore::get<double>("Friction", 1.0);
+      const double gamma = sign(angularImpulse);
+
+      resolution.angularImpulseA = friction * gamma * sqrt(ix * ix + iy * iy);
+      resolution.angularImpulseB = friction * gamma * sqrt(ix * ix + iy * iy);
     }
   }
 }
