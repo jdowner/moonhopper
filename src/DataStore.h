@@ -41,6 +41,15 @@ class DataStore
       return boost::lexical_cast<T>(getInstance().m_data[key]);
     }
 
+    static const char* get(const std::string& key, const char* defaultValue)
+    {
+      if (!contains(key))
+      {
+        return defaultValue;
+      }
+      return getInstance().m_data[key].c_str();
+    }
+
   private:
     DataStore();
 

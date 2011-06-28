@@ -42,9 +42,9 @@ set(SRC
   Vector2d.h
 )
 
-include_directories(../tinyxml)
+include_directories(../tinyxml /usr/include/freetype2)
 link_directories(../lib)
 
 add_executable(moonhopper ${SRC})
 
-target_link_libraries(moonhopper GL GLU glfw png tinyxml)
+target_link_libraries(moonhopper GL GLU glfw png tinyxml ftgl)

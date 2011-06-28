@@ -2,6 +2,7 @@
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
+#include <FTGL/ftgl.h>
 #include <cmath>
 #include "Universe.h"
 #include "DataStore.h"
@@ -269,4 +270,12 @@ void Renderer::renderHook(const Universe& universe) const
     glCallList(m_hookDisplayList);
     glPopMatrix();
   }
+}
+
+void Renderer::renderText(int x, int y, const std::string& text)
+{
+  FTPixmapFont font(DataStore::get<std::string>("DebugFontFamily").c_str());
+
+  font.FaceSize(DataStore::get<int>("DebugFontSize"));
+  font.Render(text.c_str(),-1,FTPoint(x,y));
 }

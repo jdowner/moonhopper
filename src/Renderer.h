@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <string>
 #include "TextureManager.h"
 
 class Universe;
@@ -13,6 +14,7 @@ class Renderer
   public:
     void init();
     void render(const Universe& universe) const;
+    void renderText(int x, int y, const std::string& text);
 
   private:
     void renderMoons(const Universe& universe) const;
