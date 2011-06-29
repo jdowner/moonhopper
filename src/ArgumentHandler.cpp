@@ -10,7 +10,8 @@ ArgumentHandler::ArgumentHandler(int argc, char** argv) :
   m_resourcePath(DEFAULT_RESOURCE_PATH),
   m_runTests(false),
   m_loadConfig(false),
-  m_config("")
+  m_config(""),
+  m_debug(false)
 {
   for (unsigned int index = 1; index < argc; ++index)
   {
@@ -37,6 +38,10 @@ ArgumentHandler::ArgumentHandler(int argc, char** argv) :
     {
       // TODO include a brief description of the available options
     }
+    else if (strcmp(argv[index],"--debug") == 0)
+    {
+      m_debug = true;
+    }
   }
 }
 
@@ -48,6 +53,11 @@ bool ArgumentHandler::testing() const
 bool ArgumentHandler::configuration() const
 {
   return m_loadConfig;
+}
+
+bool ArgumentHandler::debug() const
+{
+  return m_debug;
 }
 
 std::string ArgumentHandler::getConfiguration() const

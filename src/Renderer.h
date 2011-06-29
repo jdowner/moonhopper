@@ -14,7 +14,7 @@ class Renderer
   public:
     void init();
     void render(const Universe& universe) const;
-    void renderText(int x, int y, const std::string& text);
+    void renderText(int x, int y, const std::string& text) const;
 
   private:
     void renderMoons(const Universe& universe) const;

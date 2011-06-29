@@ -13,6 +13,7 @@ class ArgumentHandler
 
     bool testing() const;
     bool configuration() const;
+    bool debug() const;
 
     std::string getConfiguration() const;
     const std::string& getResourcePath() const;
@@ -22,6 +23,7 @@ class ArgumentHandler
     std::string m_config;
     bool m_loadConfig;
     bool m_runTests;
+    bool m_debug;
 };
 
 #endif // ARGUMENTHANDLER_H

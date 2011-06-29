@@ -151,8 +151,9 @@ namespace
   class RenderAvatarOp : public AvatarConstOperation
   {
     public:
-      RenderAvatarOp(unsigned int displayList)
-      : m_displayList(displayList)
+      RenderAvatarOp(const Renderer& renderer, unsigned int displayList)
+      : m_displayList(displayList),
+      m_renderer(renderer)
       {
       }
 
@@ -169,6 +170,19 @@ namespace
         glScalef(avatar.height, avatar.height, avatar.height);
         glCallList(m_displayList);
         glPopMatrix();
+
+        if (DataStore::get<bool>("Debug", false))
+        {
+          // The debugging text should appear a little bit above the avatars head
+          const double theta = moon->theta + avatar.theta + M_PI/2.0;
+          const double radius = moon->r + 1.5 * avatar.height;
+          const double x = moon->x + radius * cos(theta);
+          const double y = moon->y + radius * sin(theta);
+          const double minx = DataStore::get<double>("DomainMinX");
+          const double miny = DataStore::get<double>("DomainMinY");
+
+          m_renderer.renderText(x - minx,y - miny,"avatar");
+        }
 
         // if avatar is jumping, draw ray
         if (avatar.isJumping)
@@ -187,6 +201,7 @@ namespace
 
     private:
       unsigned int m_displayList;
+      const Renderer& m_renderer;
   };
 }
 
@@ -253,7 +268,7 @@ void Renderer::renderGrid(const Universe& universe) const
 
 void Renderer::renderAvatar(const Universe& universe) const
 {
-  RenderAvatarOp op(m_avatarDisplayList);
+  RenderAvatarOp op(*this,m_avatarDisplayList);
   universe.execute(op);
 }
     
@@ -272,7 +287,7 @@ void Renderer::renderHook(const Universe& universe) const
   }
 }
 
-void Renderer::renderText(int x, int y, const std::string& text)
+void Renderer::renderText(int x, int y, const std::string& text) const
 {
   FTPixmapFont font(DataStore::get<std::string>("DebugFontFamily").c_str());
 
