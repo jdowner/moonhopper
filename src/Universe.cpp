@@ -110,6 +110,11 @@ void Universe::moveRight()
   }
 }
 
+const MoonList& Universe::getMoons() const
+{
+  return m_moons;
+}
+
 const Avatar& Universe::getAvatar() const
 {
   return m_avatar;
@@ -181,31 +186,9 @@ bool Universe::isHookExtant() const
   return m_hook;
 }
 
-void Universe::execute(MoonOperation& op)
+bool Universe::isTetherExtant() const
 {
-  op.begin();
-  BOOST_FOREACH(Moon* moon, m_moons)
-  {
-    op.execute(*moon);
-  }
-  op.end();
-}
-
-void Universe::execute(MoonConstOperation& op) const
-{
-  op.begin();
-  BOOST_FOREACH(const Moon* moon, m_moons)
-  {
-    op.execute(*moon);
-  }
-  op.end();
-}
-
-void Universe::execute(AvatarConstOperation& op) const
-{
-  op.begin();
-  op.execute(m_avatar);
-  op.end();
+  return m_tether.isExtant();
 }
 
 void Universe::update(const UpdateContext& context)
@@ -213,6 +196,11 @@ void Universe::update(const UpdateContext& context)
   if (isJumping())
   {
     idle();
+  }
+
+  if (context.keyG && isTetherExtant())
+  {
+    releaseTetheredMoons();
   }
 
   updatePositions(context);
@@ -224,12 +212,14 @@ void Universe::updatePositions(const UpdateContext& context)
   updateMoonPositions(context);
   updateAvatarPosition(context);
   updateHookPosition(context);
+  updateTetherPosition(context);
 }
   
 void Universe::resolveCollisions()
 {
   resolveMoonCollisions();
   resolveHookCollisions();
+  resolveTetherCollisions();
 }
 
 void Universe::resolveHookCollisions()
@@ -248,6 +238,7 @@ void Universe::resolveHookCollisions()
       const double dy = m_hook->position.y - (*i)->y;
       if (dx * dx + dy * dy < r * r)
       {
+        setTetheredMoons(m_avatar.moon, *i);
         m_hook.reset();
         break;
       }
@@ -261,11 +252,15 @@ void Universe::resolveMoonCollisions()
 
   for (MoonList::iterator i = m_moons.begin(); i != m_moons.end(); ++i)
   {
+    if (isTethered(*i)) continue;
+
+    Moon& moonA = **i;
+
     for (MoonList::iterator j = i; j != m_moons.end(); ++j)
     {
       if (i == j) continue;
+      if (isTethered(*j)) continue;
 
-      Moon& moonA = **i;
       Moon& moonB = **j;
       
       CollisionResolution resolution;
@@ -299,6 +294,58 @@ void Universe::resolveMoonCollisions()
     it != markedForDestruction.end(); ++it)
   {
     destroyMoon(*it);
+  }
+}
+
+void Universe::resolveTetherCollisions()
+{
+  if (isTetherExtant())
+  {
+    std::set<Moon*> markedForDestruction;
+
+    // Check for collisions with tethered moons
+    BOOST_FOREACH(Moon* moon, m_moons)
+    {
+      if (isTethered(moon)) continue;
+
+      CollisionResolution resolution;
+      
+      elasticCollision(m_domain, *m_tether.moonA(), *moon, resolution);
+      if (resolution.type == CollisionResolution::COLLISION)
+      {
+        m_tether.applyImpulse(resolution.location, resolution.impulseA);
+        moon->u -= resolution.impulseB.x / moon->m;
+        moon->v -= resolution.impulseB.y / moon->m;
+
+        if (shouldDestroyMoon(*moon, resolution.impulseB))
+        {
+          markedForDestruction.insert(moon);
+        }
+      }
+      
+      elasticCollision(m_domain, *m_tether.moonB(), *moon, resolution);
+
+      if (resolution.type == CollisionResolution::COLLISION)
+      {
+        m_tether.applyImpulse(resolution.location, resolution.impulseA);
+        moon->u -= resolution.impulseB.x / moon->m;
+        moon->v -= resolution.impulseB.y / moon->m;
+
+        if (shouldDestroyMoon(*moon, resolution.impulseB))
+        {
+          markedForDestruction.insert(moon);
+        }
+      }
+    } 
+
+    // TODO Check for collisions with the tether itself
+
+    // Iterate through the moons marked for destruction and destroy them
+    for (std::set<Moon*>::const_iterator it = markedForDestruction.begin();
+        it != markedForDestruction.end(); ++it)
+    {
+      destroyMoon(*it);
+    }
   }
 }
 
@@ -383,6 +430,8 @@ void Universe::updateMoonPositions(const UpdateContext& context)
   const double dt = 1.0 / context.frameRate;
   BOOST_FOREACH(Moon* moon, m_moons)
   {
+    if (isTethered(moon)) continue;
+
     moon->x = m_domain.toX(moon->x + dt * moon->u);
     moon->y = m_domain.toY(moon->y + dt * moon->v);
     moon->theta += dt * moon->dtheta;
@@ -390,6 +439,67 @@ void Universe::updateMoonPositions(const UpdateContext& context)
     {
       moon->theta -= 2.0 * M_PI;
     }
+  }
+}
+
+void Universe::updateTetherPosition(const UpdateContext& context)
+{
+  if (isTetherExtant())
+  {
+    const double dt = 1.0 / context.frameRate;
+
+    // TODO get the tether to work properly across the periodic boundaries
+
+    // Update the rotation of the tether
+    const double theta = m_tether.angle();
+    const double omega = m_tether.angularVelocity();
+    
+    m_tether.setAngle(theta + dt * omega);
+
+    // Update the position of the tether
+    const Vector2d velocity = m_tether.velocity();
+
+    Vector2d delta; 
+    delta.x = dt * velocity.x;
+    delta.y = dt * velocity.y;
+
+    m_tether.moveBy(delta);
+
+    // Now we need to synchronize the kinematics of the moons.  The translation
+    // of the tether has already been accounted for above through the moveBy()
+    // call. Now, we have to account for the rotation of the tether and its
+    // effect on the position and velocity of the tethered moons
+
+    Moon* moonA = m_tether.moonA();
+    Moon* moonB = m_tether.moonB();
+ 
+    // Determine the change in the angle of rotation and get the tethers
+    // center-of-mass
+    const double dtheta = dt * omega;
+    const double c = cos(dtheta);
+    const double s = sin(dtheta);
+   
+    const Vector2d com = m_tether.position();
+
+    // Update moon A
+    double dx = moonA->x - com.x;
+    double dy = moonA->y - com.y;
+
+    moonA->x = c * dx - s * dy + com.x; 
+    moonA->y = s * dx + c * dy + com.y;
+
+    moonA->u = velocity.x - omega * (s * dx + c * dy);
+    moonA->v = velocity.y + omega * (c * dx - s * dy);
+
+    // Update moon B
+    dx = moonB->x - com.x;
+    dy = moonB->y - com.y;
+
+    moonB->x = c * dx - s * dy + com.x; 
+    moonB->y = s * dx + c * dy + com.y; 
+
+    moonB->u = velocity.x - omega * (s * dx + c * dy);
+    moonB->v = velocity.y + omega * (c * dx - s * dy);
   }
 }
 
@@ -419,7 +529,7 @@ void Universe::updateHookPosition(const UpdateContext& context)
 {
   if (not isHookExtant())
   {
-    if (context.keyH)
+    if (context.keyH && !isTetherExtant())
     {
       launchHook();
     }
@@ -429,6 +539,8 @@ void Universe::updateHookPosition(const UpdateContext& context)
     const double dt = 1.0 / context.frameRate;
     m_hook->position.x += dt * m_hook->velocity.x;
     m_hook->position.y += dt * m_hook->velocity.y;
+    m_hook->position.x = m_domain.toX(m_hook->position.x);
+    m_hook->position.y = m_domain.toY(m_hook->position.y);
   }
 }
 
@@ -454,3 +566,19 @@ const Hook& Universe::getHook() const
 {
   return *m_hook;
 }
+    
+void Universe::setTetheredMoons(Moon* moonA, Moon* moonB)
+{
+  m_tether.setMoons(moonA, moonB);
+}
+
+void Universe::releaseTetheredMoons()
+{
+  m_tether.reset();
+}
+    
+bool Universe::isTethered(const Moon* moon) const
+{
+  return moon && ((moon == m_tether.moonA()) || (moon == m_tether.moonB()));
+}
+

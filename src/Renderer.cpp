@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <sstream>
 #include <boost/foreach.hpp>
 #include <GL/glfw.h>
 #include <GL/glu.h>
@@ -125,84 +126,6 @@ namespace
 
     return index;
   }
-
-  class RenderMoonOp : public MoonConstOperation
-  {
-    public:
-      RenderMoonOp(unsigned int displayList)
-      : m_displayList(displayList)
-      {
-      }
-
-      virtual void execute(const Moon& moon)
-      {
-        glPushMatrix();
-        glTranslatef(moon.x, moon.y, 0.0);
-        glRotatef(rad2deg(moon.theta), 0.0, 0.0, 1.0);
-        glScalef(moon.r,moon.r,moon.r);
-        glCallList(m_displayList);
-        glPopMatrix();
-      }
-
-    private:
-      unsigned int m_displayList;
-  };
-
-  class RenderAvatarOp : public AvatarConstOperation
-  {
-    public:
-      RenderAvatarOp(const Renderer& renderer, unsigned int displayList)
-      : m_displayList(displayList),
-      m_renderer(renderer)
-      {
-      }
-
-      virtual void execute(const Avatar& avatar)
-      {
-        const Moon* moon = avatar.moon;
-
-        assert(moon);
-
-        glPushMatrix();
-        glTranslatef(moon->x, moon->y, 0.0);
-        glRotatef(rad2deg(moon->theta + avatar.theta), 0.0, 0.0, 1.0);
-        glTranslatef(0.0, moon->r, 0.0);
-        glScalef(avatar.height, avatar.height, avatar.height);
-        glCallList(m_displayList);
-        glPopMatrix();
-
-        if (DataStore::get<bool>("Debug", false))
-        {
-          // The debugging text should appear a little bit above the avatars head
-          const double theta = moon->theta + avatar.theta + M_PI/2.0;
-          const double radius = moon->r + 1.5 * avatar.height;
-          const double x = moon->x + radius * cos(theta);
-          const double y = moon->y + radius * sin(theta);
-          const double minx = DataStore::get<double>("DomainMinX");
-          const double miny = DataStore::get<double>("DomainMinY");
-
-          m_renderer.renderText(x - minx,y - miny,"avatar");
-        }
-
-        // if avatar is jumping, draw ray
-        if (avatar.isJumping)
-        { 
-          const Ray& ray = avatar.up;
-
-          glDisable(GL_TEXTURE_2D);
-          glColor3ub(255,0,255);
-          glBegin(GL_LINES);
-          glVertex2f(ray.ox, ray.oy);
-          glVertex2f(ray.ox + 100.0 * ray.nx, ray.oy + 100.0 * ray.ny);
-          glEnd();
-          glEnable(GL_TEXTURE_2D);
-        }
-      }
-
-    private:
-      unsigned int m_displayList;
-      const Renderer& m_renderer;
-  };
 }
 
 void Renderer::init()
@@ -257,8 +180,33 @@ void Renderer::render(const Universe& universe) const
 
 void Renderer::renderMoons(const Universe& universe) const
 {
-  RenderMoonOp op(m_moonDisplayList);
-  universe.execute(op);
+  BOOST_FOREACH(Moon* moon, universe.getMoons())
+  {
+    glPushMatrix();
+    glTranslatef(moon->x, moon->y, 0.0);
+    glRotatef(rad2deg(moon->theta), 0.0, 0.0, 1.0);
+    glScalef(moon->r,moon->r,moon->r);
+    glCallList(m_moonDisplayList);
+    glPopMatrix();
+
+    if (DataStore::get<bool>("Debug", false) && universe.isTethered(moon))
+    {
+      const double x = moon->x;
+      const double y = moon->y + moon->r + 5;
+      const double minx = DataStore::get<double>("DomainMinX");
+      const double miny = DataStore::get<double>("DomainMinY");
+
+      renderText(x - minx,y - miny,"tethered");
+
+      std::stringstream u;
+      u << moon->u;
+      renderText(x - minx,y - miny + 10,u.str().c_str());
+      
+      std::stringstream v;
+      v << moon->v;
+      renderText(x - minx,y - miny + 20,v.str().c_str());
+    }
+  }
 }
 
 void Renderer::renderGrid(const Universe& universe) const
@@ -268,8 +216,45 @@ void Renderer::renderGrid(const Universe& universe) const
 
 void Renderer::renderAvatar(const Universe& universe) const
 {
-  RenderAvatarOp op(*this,m_avatarDisplayList);
-  universe.execute(op);
+  const Avatar& avatar = universe.getAvatar();
+  const Moon* moon = avatar.moon;
+
+  assert(moon);
+
+  glPushMatrix();
+  glTranslatef(moon->x, moon->y, 0.0);
+  glRotatef(rad2deg(moon->theta + avatar.theta), 0.0, 0.0, 1.0);
+  glTranslatef(0.0, moon->r, 0.0);
+  glScalef(avatar.height, avatar.height, avatar.height);
+  glCallList(m_avatarDisplayList);
+  glPopMatrix();
+
+  if (DataStore::get<bool>("Debug", false))
+  {
+    // The debugging text should appear a little bit above the avatars head
+    const double theta = moon->theta + avatar.theta + M_PI/2.0;
+    const double radius = moon->r + 1.5 * avatar.height;
+    const double x = moon->x + radius * cos(theta);
+    const double y = moon->y + radius * sin(theta);
+    const double minx = DataStore::get<double>("DomainMinX");
+    const double miny = DataStore::get<double>("DomainMinY");
+
+    renderText(x - minx,y - miny,"avatar");
+  }
+
+  // if avatar is jumping, draw ray
+  if (avatar.isJumping)
+  { 
+    const Ray& ray = avatar.up;
+
+    glDisable(GL_TEXTURE_2D);
+    glColor3ub(255,0,255);
+    glBegin(GL_LINES);
+    glVertex2f(ray.ox, ray.oy);
+    glVertex2f(ray.ox + 100.0 * ray.nx, ray.oy + 100.0 * ray.ny);
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+  }
 }
     
 void Renderer::renderHook(const Universe& universe) const
@@ -294,3 +279,4 @@ void Renderer::renderText(int x, int y, const std::string& text) const
   font.FaceSize(DataStore::get<int>("DebugFontSize"));
   font.Render(text.c_str(),-1,FTPoint(x,y));
 }
+

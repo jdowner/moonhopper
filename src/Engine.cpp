@@ -71,6 +71,7 @@ UpdateContext Engine::createUpdateContext() const
   context.keyRight = (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT));
   context.keyUp = (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP));
   context.keyH = (GLFW_PRESS == glfwGetKey(72));
+  context.keyG = (GLFW_PRESS == glfwGetKey(71));
 
   return context;
 }

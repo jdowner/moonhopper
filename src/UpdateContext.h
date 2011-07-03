@@ -9,6 +9,7 @@ struct UpdateContext
   bool keyRight;
   bool keyUp;
   bool keyH;
+  bool keyG;
 };
 
 #endif // UPDATECONTEXT_H

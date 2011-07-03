@@ -69,6 +69,13 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, Co
 
       resolution.angularImpulseA = friction * gamma * sqrt(ix * ix + iy * iy);
       resolution.angularImpulseB = friction * gamma * sqrt(ix * ix + iy * iy);
+
+      // Determine the location
+      // TODO the location of the collision is approximate. In the future, it
+      // may be worth considering whether a more accurate approach is
+      // worthwhile.
+      resolution.location.x = moonA.x + dx * moonA.r / sqrt(xx);
+      resolution.location.y = moonA.y + dy * moonA.r / sqrt(xx);
     }
   }
 }

@@ -33,6 +33,8 @@ set(SRC
   TestDriver.h
   TestUtils.cpp
   TestUtils.h
+  TetheredMoons.cpp
+  TetheredMoons.h
   TextureManager.cpp
   TextureManager.h
   UpdateContext.h

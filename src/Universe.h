@@ -9,30 +9,7 @@
 #include "Ray.h"
 #include "PeriodicDomain.h"
 #include "Vector2d.h"
-
-struct MoonOperation
-{
-  virtual ~MoonOperation(){}
-  virtual void begin() {}
-  virtual void execute(Moon& moon) = 0;
-  virtual void end() {}
-};
-
-struct MoonConstOperation
-{
-  virtual ~MoonConstOperation(){}
-  virtual void begin() {}
-  virtual void execute(const Moon& moon) = 0;
-  virtual void end() {}
-};
-
-struct AvatarConstOperation
-{
-  virtual ~AvatarConstOperation(){}
-  virtual void begin() {}
-  virtual void execute(const Avatar& moon) = 0;
-  virtual void end() {}
-};
+#include "TetheredMoons.h"
 
 typedef std::list<Moon*> MoonList;
 
@@ -48,11 +25,9 @@ class Universe
     Universe();
     ~Universe();
 
+    const MoonList& getMoons() const;
     const Avatar& getAvatar() const;
-
-    void execute(MoonOperation& op);
-    void execute(MoonConstOperation& op) const;
-    void execute(AvatarConstOperation& op) const;
+    const Hook& getHook() const;
 
     void update(const UpdateContext& context);
 
@@ -66,21 +41,26 @@ class Universe
     bool isIdle() const;
     bool isAvatarOnThisMoon(const Moon& moon) const;
     bool isHookExtant() const;
-
-    const Hook& getHook() const;
+    bool isTetherExtant() const;
+    bool isTethered(const Moon* moon) const;
 
   private:
     void resolveCollisions();
     void resolveMoonCollisions();
     void resolveHookCollisions();
+    void resolveTetherCollisions();
 
     void updatePositions(const UpdateContext& context);
     void updateMoonPositions(const UpdateContext& context);
     void updateAvatarPosition(const UpdateContext& context);
     void updateHookPosition(const UpdateContext& context);
+    void updateTetherPosition(const UpdateContext& context);
 
     bool shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) const;
     void destroyMoon(Moon* moon);
+
+    void setTetheredMoons(Moon* moonA, Moon* moonB);
+    void releaseTetheredMoons();
 
   private:
     PeriodicDomain m_domain;   
@@ -88,6 +68,8 @@ class Universe
     Avatar m_avatar;
     boost::scoped_ptr<Hook> m_hook;
     const double m_avatarAngularSpeed;
+
+    TetheredMoons m_tether;
 };
 
 #endif // UNIVERSE_H

@@ -19,6 +19,7 @@ struct CollisionResolution
     type = NONE;
   }
 
+  Vector2d location;
   Vector2d impulseA;
   Vector2d impulseB;
   double angularImpulseA;
