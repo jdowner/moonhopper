@@ -77,6 +77,7 @@ Universe::Universe()
   m_avatar.height = DataStore::get<double>("AvatarHeight", 5.0);
   m_avatar.moon = m_moons.back();
   m_avatar.isJumping = false;
+  m_avatar.isDead = false;
 
   m_avatar.up.ox = 0.0;
   m_avatar.up.oy = 0.0;
@@ -359,6 +360,11 @@ bool Universe::shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) cons
 bool Universe::isAvatarOnThisMoon(const Moon& moon) const
 {
   return (m_avatar.moon == &moon);
+}
+
+bool Universe::isAvatarDead() const
+{
+  return m_avatar.isDead;
 }
 
 void Universe::destroyMoon(Moon* moon)

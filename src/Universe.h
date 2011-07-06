@@ -40,6 +40,7 @@ class Universe
     bool isJumping() const;
     bool isIdle() const;
     bool isAvatarOnThisMoon(const Moon& moon) const;
+    bool isAvatarDead() const;
     bool isHookExtant() const;
     bool isTetherExtant() const;
     bool isTethered(const Moon* moon) const;

@@ -10,6 +10,7 @@ struct Avatar
   double height;
   Moon* moon;
   bool isJumping;
+  bool isDead;
   Ray up;
 };
 
