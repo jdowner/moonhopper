@@ -172,8 +172,16 @@ void Renderer::render(const Universe& universe) const
   
   renderGrid(universe);
   renderMoons(universe);
-  renderAvatar(universe);
-  renderHook(universe);
+
+  if (!universe.isAvatarDead())
+  {
+    renderAvatar(universe);
+    renderHook(universe);
+  }
+  else
+  {
+    renderDeathScreen(universe);
+  }
   
   glfwSwapBuffers();
 }
@@ -270,6 +278,10 @@ void Renderer::renderHook(const Universe& universe) const
     glCallList(m_hookDisplayList);
     glPopMatrix();
   }
+}
+
+void Renderer::renderDeathScreen(const Universe& universe) const
+{
 }
 
 void Renderer::renderText(int x, int y, const std::string& text) const

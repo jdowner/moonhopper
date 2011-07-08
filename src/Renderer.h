@@ -21,6 +21,7 @@ class Renderer
     void renderGrid(const Universe& universe) const;
     void renderAvatar(const Universe& universe) const;
     void renderHook(const Universe& universe) const;
+    void renderDeathScreen(const Universe& universe) const;
 
   private:
     unsigned int m_moonDisplayList;
