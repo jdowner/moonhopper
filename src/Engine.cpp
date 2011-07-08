@@ -57,9 +57,10 @@ void Engine::update()
 {
   m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 
-  m_universe.update(createUpdateContext());
+  UpdateContext context = createUpdateContext();
+  m_universe.update(context);
   
-  m_lastUpdate = glfwGetTime();
+  m_lastUpdate = context.currentTime;
 }
     
 UpdateContext Engine::createUpdateContext() const
