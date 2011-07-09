@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdexcept>
 #include <map>
 #include <cassert>
 #include <boost/lexical_cast.hpp>
@@ -27,7 +28,13 @@ class DataStore
     template <typename T>
     static T get(const std::string& key)
     {
-      assert(contains(key));
+      if (!contains(key))
+      {
+        std::stringstream message;
+        message << "Unable to find '" << key << "' requested from ";
+        message << "the DataStore";
+        throw std::runtime_error(message.str());
+      }
       return boost::lexical_cast<T>(getInstance().m_data[key]);
     }
 

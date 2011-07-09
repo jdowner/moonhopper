@@ -23,6 +23,10 @@ int main(int argc, char** argv)
       {
         DataStore::load(arguments.getConfiguration());
       }
+      else
+      {
+        DataStore::load(arguments.getResourcePath() + "default.cfg");
+      }
 
       DataStore::set("Debug", arguments.debug());
       DataStore::set("ResourcePath", arguments.getResourcePath());
