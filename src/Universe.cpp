@@ -181,10 +181,10 @@ bool Universe::isIdle() const
 {
   return !m_avatar.isJumping;
 }
-    
+
 bool Universe::isHookExtant() const
 {
-  return m_hook;
+  return m_hook != 0;
 }
 
 bool Universe::isTetherExtant() const
