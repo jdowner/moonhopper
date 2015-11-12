@@ -9,6 +9,8 @@ find_package(GLFW)
 
 set(MOONHOPPER_LIB_PATH ${CMAKE_BINARY_DIR}/lib)
 set(MOONHOPPER_BIN_PATH ${CMAKE_BINARY_DIR}/bin)
+set(MOONHOPPER_RES_PATH ${CMAKE_BINARY_DIR}/share)
 
 add_subdirectory(src)
 add_subdirectory(tinyxml)
+add_subdirectory(resources)
