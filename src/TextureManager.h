@@ -46,7 +46,7 @@ public:
 
 	Texture* getTexture( const std::string& name );
 	Texture* getTexture( int index );
-		
+
 };
 
 #endif

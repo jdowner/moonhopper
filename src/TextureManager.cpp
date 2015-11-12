@@ -9,7 +9,7 @@
 #include "Texture.h"
 
 namespace
-{		
+{
 	const int PNG_HEADER_LENGTH = 8; // Define the header length of a PNG file
 }
 
@@ -24,23 +24,23 @@ TextureManager::~TextureManager()
 //
 //	Loads the texture from file. The texture data is kept and
 //	associated with the filename, so filenames must be unique
-//	to the textures used. 
+//	to the textures used.
 //
 bool TextureManager::loadTexture( const std::string& filename, const std::string& textureID )
 {
 	// If this name is already in the manager, the texture is not loaded
 	if ( m_map.end() == m_map.find( textureID ) )
-	{	
+	{
 		// Create a new texture object
 		InternalTexture* texture = new InternalTexture;
 
 		// Load the image
 		loadPNG( filename, *texture );
-		
+
 		// Create an object that OpenGL can work with
 		createTextureObject( *texture );
 
-		// Store pointer to the texture 
+		// Store pointer to the texture
 		m_map[ textureID ] = texture;
 
 	}
@@ -95,8 +95,8 @@ void TextureManager::createTextureObject( InternalTexture& texture ) const
 	// Check the dimensions of the texture
 	if ( !texture.height || !texture.width )
 		throw std::runtime_error("Textures must have non-zero dimensions");
-		
-	if ( ( ( texture.height & ( texture.height - 1 ) ) != 0 ) || 
+
+	if ( ( ( texture.height & ( texture.height - 1 ) ) != 0 ) ||
 		( ( texture.width & ( texture.width - 1 ) ) != 0 ) )
 		throw std::runtime_error("Texture dimensions must be a power of two");
 
@@ -178,7 +178,7 @@ unsigned int TextureManager::getTextureHandle( const std::string& name ) const
 		throw std::runtime_error("ERROR: Unable to find requested texture");
 	}
 
-	return texture->second->handle;	
+	return texture->second->handle;
 }
 
 //
@@ -246,11 +246,11 @@ void TextureManager::loadPNG( const std::string& filename, InternalTexture& text
 	// Allocate memory for image data
 	png_bytep* row_pointers = new png_bytep[ texture.height ];
 	row_pointers = png_get_rows( png_ptr, info_ptr );
-		
+
 	// Ensure the data container is empty
 	texture.data.clear();
 
-	// Copy the data 
+	// Copy the data
 	const int row_length = texture.width * texture.bytes;
 	for ( int i = texture.height; --i >= 0; /*nothing*/ )
 	{
@@ -264,8 +264,8 @@ void TextureManager::loadPNG( const std::string& filename, InternalTexture& text
 //	Saves a PNG file from a texture
 //
 void TextureManager::savePNG( const std::string& filename, const InternalTexture& texture )
-{	
-	// Open file to write to 
+{
+	// Open file to write to
 	FILE *fp = fopen( filename.c_str(), "wb");
 	if (!fp)
 	{
@@ -308,7 +308,7 @@ void TextureManager::savePNG( const std::string& filename, const InternalTexture
 	png_set_rows( png_ptr, info_ptr, row_pointers );
 
 	// Create the PNG header
-	png_set_IHDR(png_ptr, info_ptr, texture.width, texture.height, 8, PNG_COLOR_TYPE_RGB_ALPHA, 
+	png_set_IHDR(png_ptr, info_ptr, texture.width, texture.height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
 		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 	// Create the PNG file

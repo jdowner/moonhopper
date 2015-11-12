@@ -9,10 +9,10 @@ namespace
     PeriodicDomain domain(-1.0,0.0,-1.0,0.0);
 
     // Test the max/min accessors
-    ASSERT_EQUAL(-1.0, domain.getMinX()); 
-    ASSERT_EQUAL(0.0, domain.getMaxX()); 
-    ASSERT_EQUAL(-1.0, domain.getMinY()); 
-    ASSERT_EQUAL(0.0, domain.getMaxY()); 
+    ASSERT_EQUAL(-1.0, domain.getMinX());
+    ASSERT_EQUAL(0.0, domain.getMaxX());
+    ASSERT_EQUAL(-1.0, domain.getMinY());
+    ASSERT_EQUAL(0.0, domain.getMaxY());
 
     return true;
   }

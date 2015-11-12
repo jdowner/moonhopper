@@ -39,16 +39,16 @@ Universe::Universe()
     DataStore::get<double>("DomainMaxY", 300.0))
 {
   // For now we are just generating some random positions for the moons
-  
+
   const unsigned int NUM_MOONS = DataStore::get<int>("NumberOfMoons", 32);
   const double MIN_X = DataStore::get<double>("DomainMinX", -300.0);
   const double MAX_X = DataStore::get<double>("DomainMaxX", 300.0);
   const double MIN_Y = DataStore::get<double>("DomainMinY", -300.0);
   const double MAX_Y = DataStore::get<double>("DomainMaxY", 300.0);
   const double MAX_VELOCITY = DataStore::get<double>("MaxVelocity", 30.0);
-  const double MIN_ANGULAR_VELOCITY = 
+  const double MIN_ANGULAR_VELOCITY =
     DataStore::get<double>("MinAngularVelocity", -M_PI);
-  const double MAX_ANGULAR_VELOCITY = 
+  const double MAX_ANGULAR_VELOCITY =
     DataStore::get<double>("MaxAngularVelocity", M_PI);
   const double MIN_RADIUS = DataStore::get<double>("MinMoonRadius", 5.0);
   const double MAX_RADIUS = DataStore::get<double>("MaxMoonRadius", 30.0);
@@ -62,7 +62,7 @@ Universe::Universe()
     moon->x = MIN_X + (MAX_X - MIN_X) * uniform();
     moon->y = MIN_Y + (MAX_Y - MIN_Y) * uniform();
     moon->theta = 2.0 * M_PI * uniform();
-    moon->dtheta = MIN_ANGULAR_VELOCITY + 
+    moon->dtheta = MIN_ANGULAR_VELOCITY +
       (MAX_ANGULAR_VELOCITY - MIN_ANGULAR_VELOCITY) * uniform();
 
     const double vAngle = 2.0 * M_PI * uniform();
@@ -215,7 +215,7 @@ void Universe::updatePositions(const UpdateContext& context)
   updateHookPosition(context);
   updateTetherPosition(context);
 }
-  
+
 void Universe::resolveCollisions()
 {
   resolveMoonCollisions();
@@ -263,7 +263,7 @@ void Universe::resolveMoonCollisions()
       if (isTethered(*j)) continue;
 
       Moon& moonB = **j;
-      
+
       CollisionResolution resolution;
       elasticCollision(m_domain, moonA, moonB, resolution);
 
@@ -281,7 +281,7 @@ void Universe::resolveMoonCollisions()
         {
           markedForDestruction.insert(&moonA);
         }
-   
+
         if (shouldDestroyMoon(moonB, resolution.impulseB))
         {
           markedForDestruction.insert(&moonB);
@@ -310,7 +310,7 @@ void Universe::resolveTetherCollisions()
       if (isTethered(moon)) continue;
 
       CollisionResolution resolution;
-      
+
       elasticCollision(m_domain, *m_tether.moonA(), *moon, resolution);
       if (resolution.type == CollisionResolution::COLLISION)
       {
@@ -323,7 +323,7 @@ void Universe::resolveTetherCollisions()
           markedForDestruction.insert(moon);
         }
       }
-      
+
       elasticCollision(m_domain, *m_tether.moonB(), *moon, resolution);
 
       if (resolution.type == CollisionResolution::COLLISION)
@@ -337,7 +337,7 @@ void Universe::resolveTetherCollisions()
           markedForDestruction.insert(moon);
         }
       }
-    } 
+    }
 
     // TODO Check for collisions with the tether itself
 
@@ -353,7 +353,7 @@ void Universe::resolveTetherCollisions()
 bool Universe::shouldDestroyMoon(const Moon& moon, const Vector2d& impulse) const
 {
   const double magnitude = sqrt(dot(impulse,impulse));
-  return !isAvatarOnThisMoon(moon) && 
+  return !isAvatarOnThisMoon(moon) &&
     (magnitude > DataStore::get<double>("DestructionSpeed", 2.0) * moon.r * moon.m);
 }
 
@@ -389,7 +389,7 @@ void Universe::destroyMoon(Moon* moon)
       velocity.x = moon->u;
       velocity.y = moon->v;
 
-      Vector2d newVelocity = rotate(30.0, origin, velocity); 
+      Vector2d newVelocity = rotate(30.0, origin, velocity);
       newmoon->u = newVelocity.x;
       newmoon->v = newVelocity.y;
 
@@ -420,7 +420,7 @@ void Universe::destroyMoon(Moon* moon)
       velocity.x = moon->u;
       velocity.y = moon->v;
 
-      Vector2d newVelocity = rotate(-30.0, origin, velocity); 
+      Vector2d newVelocity = rotate(-30.0, origin, velocity);
       newmoon->u = newVelocity.x;
       newmoon->v = newVelocity.y;
 
@@ -459,13 +459,13 @@ void Universe::updateTetherPosition(const UpdateContext& context)
     // Update the rotation of the tether
     const double theta = m_tether.angle();
     const double omega = m_tether.angularVelocity();
-    
+
     m_tether.setAngle(theta + dt * omega);
 
     // Update the position of the tether
     const Vector2d velocity = m_tether.velocity();
 
-    Vector2d delta; 
+    Vector2d delta;
     delta.x = dt * velocity.x;
     delta.y = dt * velocity.y;
 
@@ -478,20 +478,20 @@ void Universe::updateTetherPosition(const UpdateContext& context)
 
     Moon* moonA = m_tether.moonA();
     Moon* moonB = m_tether.moonB();
- 
+
     // Determine the change in the angle of rotation and get the tethers
     // center-of-mass
     const double dtheta = dt * omega;
     const double c = cos(dtheta);
     const double s = sin(dtheta);
-   
+
     const Vector2d com = m_tether.position();
 
     // Update moon A
     double dx = moonA->x - com.x;
     double dy = moonA->y - com.y;
 
-    moonA->x = c * dx - s * dy + com.x; 
+    moonA->x = c * dx - s * dy + com.x;
     moonA->y = s * dx + c * dy + com.y;
 
     moonA->u = velocity.x - omega * (s * dx + c * dy);
@@ -501,8 +501,8 @@ void Universe::updateTetherPosition(const UpdateContext& context)
     dx = moonB->x - com.x;
     dy = moonB->y - com.y;
 
-    moonB->x = c * dx - s * dy + com.x; 
-    moonB->y = s * dx + c * dy + com.y; 
+    moonB->x = c * dx - s * dy + com.x;
+    moonB->y = s * dx + c * dy + com.y;
 
     moonB->u = velocity.x - omega * (s * dx + c * dy);
     moonB->v = velocity.y + omega * (c * dx - s * dy);
@@ -572,7 +572,7 @@ const Hook& Universe::getHook() const
 {
   return *m_hook;
 }
-    
+
 void Universe::setTetheredMoons(Moon* moonA, Moon* moonB)
 {
   m_tether.setMoons(moonA, moonB);
@@ -582,7 +582,7 @@ void Universe::releaseTetheredMoons()
 {
   m_tether.reset();
 }
-    
+
 bool Universe::isTethered(const Moon* moon) const
 {
   return moon && ((moon == m_tether.moonA()) || (moon == m_tether.moonB()));

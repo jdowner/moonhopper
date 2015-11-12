@@ -11,7 +11,7 @@
  *
  */
 class Engine
-{ 
+{
   public:
     Engine();
 

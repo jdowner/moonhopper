@@ -64,7 +64,7 @@ std::string ArgumentHandler::getConfiguration() const
 {
   return m_resourcePath + m_config;
 }
-  
+
 const std::string& ArgumentHandler::getResourcePath() const
 {
   return m_resourcePath;

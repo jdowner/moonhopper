@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <boost/lexical_cast.hpp>
 
-namespace 
+namespace
 {
   template <typename T>
   T getProperty(const TiXmlElement* element, const std::string& child)
@@ -35,7 +35,7 @@ void Animation::load(const TiXmlElement* animation)
   for(const TiXmlElement* element = animation->FirstChildElement("frame");
     element; element = element->NextSiblingElement("frame"))
   {
-    AnimationFrame frame; 
+    AnimationFrame frame;
     frame.height = getProperty<unsigned int>(element, "height");
     frame.width = getProperty<unsigned int>(element,"width");
     frame.period = getProperty<double>(element,"period");

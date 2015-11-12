@@ -64,7 +64,7 @@ class Universe
     void releaseTetheredMoons();
 
   private:
-    PeriodicDomain m_domain;   
+    PeriodicDomain m_domain;
     MoonList m_moons;
     Avatar m_avatar;
     boost::scoped_ptr<Hook> m_hook;
