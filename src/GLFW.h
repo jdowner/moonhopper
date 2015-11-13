@@ -31,6 +31,7 @@ namespace glfw
       void pollEvents() const;
 
       bool isOpen() const;
+      int getKey(int key) const;
 
     public:
 #ifdef USE_GLFW3

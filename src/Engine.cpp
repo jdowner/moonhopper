@@ -72,7 +72,7 @@ void Engine::update()
 {
   m_window->pollEvents();
 
-  m_running = !glfw::getKey(glfw::KEY_ESC) && m_window->isOpen();
+  m_running = !m_window->getKey(glfw::KEY_ESC) && m_window->isOpen();
 
   UpdateContext context = createUpdateContext();
   m_universe.update(context);
@@ -85,12 +85,12 @@ UpdateContext Engine::createUpdateContext() const
   UpdateContext context;
   context.currentTime = glfw::time();
   context.frameRate = m_frameRate;
-  context.keyLeft = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_LEFT));
-  context.keyRight = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_RIGHT));
-  context.keyUp = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_UP));
-  context.keyG = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_G));
-  context.keyH = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_H));
-  context.keyTab = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_TAB));
+  context.keyLeft = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_LEFT));
+  context.keyRight = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_RIGHT));
+  context.keyUp = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_UP));
+  context.keyG = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_G));
+  context.keyH = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_H));
+  context.keyTab = (glfw::KEY_PRESS == m_window->getKey(glfw::KEY_TAB));
 
   return context;
 }

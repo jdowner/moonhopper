@@ -66,11 +66,6 @@ namespace glfw
 #endif // USE_GLFW3
   }
 
-  int getKey(int key)
-  {
-    return 0;
-  }
-
   void swapInterval(int interval)
   {
     glfwSwapInterval(interval);
@@ -124,6 +119,15 @@ namespace glfw
   {
 #ifdef USE_GLFW3
     glfwPollEvents();
+#endif // USE_GLFW3
+  }
+
+  int Window::getKey(int key) const
+  {
+#ifdef USE_GLFW3
+    return glfwGetKey(m_window, key);
+#else
+    return glfwGetKey(key);
 #endif // USE_GLFW3
   }
 }
