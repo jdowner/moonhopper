@@ -20,7 +20,7 @@ namespace
     unsigned int index = glGenLists(1);
 
     glNewList(index, GL_COMPILE);
-   
+
     glDisable(GL_TEXTURE_2D);
 
     glColor3ub(0x22,0x22,0x22);
@@ -32,19 +32,19 @@ namespace
     glVertex2f(-10.0,+10.0);
     glEnd();
 
-    const unsigned int NUM_X_LINES = 
+    const unsigned int NUM_X_LINES =
       DataStore::get<unsigned int>("NumGridLinesX", 31);
-    const unsigned int NUM_Y_LINES = 
+    const unsigned int NUM_Y_LINES =
       DataStore::get<unsigned int>("NumGridLinesY", 31);
 
     const double minX = DataStore::get<double>("DomainMinX", -300.0);
     const double minY = DataStore::get<double>("DomainMinY", -300.0);
     const double maxX = DataStore::get<double>("DomainMaxX", 300.0);
     const double maxY = DataStore::get<double>("DomainMaxY", 300.0);
-    
+
     const double dx = (maxX - minX) / (NUM_X_LINES + 1);
     const double dy = (maxY - minY) / (NUM_Y_LINES + 1);
-    
+
     for (unsigned int i = 0; i < NUM_X_LINES; ++i)
     {
       glBegin(GL_LINES);
@@ -59,9 +59,9 @@ namespace
       glVertex2f(maxX, i * dy + minY);
       glEnd();
     }
-    
+
     glEnable(GL_TEXTURE_2D);
-    
+
     glEndList();
 
     return index;
@@ -110,7 +110,7 @@ namespace
   unsigned int createHookDisplayList(const TextureManager& textures)
   {
     unsigned int index = glGenLists(1);
-    
+
     glNewList(index, GL_COMPILE);
 
     glBindTexture(GL_TEXTURE_2D, textures.getTextureHandle("hook"));
@@ -154,7 +154,7 @@ void Renderer::init()
   glLoadIdentity();
 
   const std::string path(DataStore::get<std::string>("ResourcePath"));
-  
+
   m_textures.loadTexture(path + DataStore::get<std::string>("MoonImg"), "moon");
   m_textures.loadTexture(path + DataStore::get<std::string>("Avatar"), "avatar");
   m_textures.loadTexture(path + DataStore::get<std::string>("Hook"), "hook");
@@ -169,7 +169,7 @@ void Renderer::render(const Universe& universe) const
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
-  
+
   renderGrid(universe);
   renderMoons(universe);
 
@@ -182,7 +182,7 @@ void Renderer::render(const Universe& universe) const
   {
     renderDeathScreen(universe);
   }
-  
+
   glfwSwapBuffers();
 }
 
@@ -209,7 +209,7 @@ void Renderer::renderMoons(const Universe& universe) const
       std::stringstream u;
       u << moon->u;
       renderText(x - minx,y - miny + 10,u.str().c_str());
-      
+
       std::stringstream v;
       v << moon->v;
       renderText(x - minx,y - miny + 20,v.str().c_str());
@@ -252,7 +252,7 @@ void Renderer::renderAvatar(const Universe& universe) const
 
   // if avatar is jumping, draw ray
   if (avatar.isJumping)
-  { 
+  {
     const Ray& ray = avatar.up;
 
     glDisable(GL_TEXTURE_2D);
@@ -264,7 +264,7 @@ void Renderer::renderAvatar(const Universe& universe) const
     glEnable(GL_TEXTURE_2D);
   }
 }
-    
+
 void Renderer::renderHook(const Universe& universe) const
 {
   if (universe.isHookExtant())

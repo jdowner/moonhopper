@@ -181,7 +181,7 @@ void TetheredMoons::calculateInertia()
 
   m_inertia = IzA + m_moonA->m * dA2 + IzB + m_moonB->m * dB2;
 }
-  
+
 void TetheredMoons::calculateCOM()
 {
   assert(m_moonA);

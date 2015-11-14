@@ -1,6 +1,11 @@
 set(CMAKE_CXX_FLAGS -DTIXML_USE_STL)
-set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
-set(SRC
+set(EXECUTABLE_OUTPUT_PATH ${MOONHOPPER_BIN_PATH})
+
+include_directories(../tinyxml /usr/include/freetype2)
+link_directories(${MOONHOPPER_LIB_PATH}/lib)
+
+add_definitions(-std=c++11)
+add_executable(moonhopper
   AABB.cpp
   AABB.h
   Animation.cpp
@@ -42,11 +47,6 @@ set(SRC
   Universe.h
   Vector2d.cpp
   Vector2d.h
-)
-
-include_directories(../tinyxml /usr/include/freetype2)
-link_directories(../lib)
-
-add_executable(moonhopper ${SRC})
+  )
 
 target_link_libraries(moonhopper GL GLU glfw png tinyxml ftgl)

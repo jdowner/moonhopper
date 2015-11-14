@@ -1,5 +1,5 @@
 #include "AABB.h"
-    
+
 AABB::AABB(double minx, double miny, double maxx, double maxy)
 : m_minx(minx)
 , m_miny(miny)

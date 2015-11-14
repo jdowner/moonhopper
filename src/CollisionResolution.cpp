@@ -62,7 +62,7 @@ void elasticCollision(const PeriodicDomain& domain, Moon& moonA, Moon& moonB, Co
       const double radialVelocityA = moonA.r * moonA.dtheta;
       const double radialVelocityB = moonB.r * moonB.dtheta;
       const double tangentialVelocity = (du * dy - dv * dx) / sqrt(xx);
-      const double angularImpulse = 
+      const double angularImpulse =
         radialVelocityA + radialVelocityB + tangentialVelocity;
       const double friction = DataStore::get<double>("Friction", 1.0);
       const double gamma = sign(angularImpulse);

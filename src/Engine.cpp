@@ -11,9 +11,9 @@
 #include "MathUtils.h"
 #include "UpdateContext.h"
 
-Engine::Engine() : 
-  m_running(false), 
-  m_frameRate(30.0), 
+Engine::Engine() :
+  m_running(false),
+  m_frameRate(30.0),
   m_lastUpdate(0)
 {
 }
@@ -49,7 +49,7 @@ bool Engine::running() const
 }
 
 void Engine::render()
-{ 
+{
   m_renderer.render(m_universe);
 }
 
@@ -59,10 +59,10 @@ void Engine::update()
 
   UpdateContext context = createUpdateContext();
   m_universe.update(context);
-  
+
   m_lastUpdate = context.currentTime;
 }
-    
+
 UpdateContext Engine::createUpdateContext() const
 {
   UpdateContext context;

@@ -12,7 +12,7 @@ class TetheredMoons
 {
   public:
     TetheredMoons();
-   
+
     bool isExtant() const;
     void reset();
     void setMoons(Moon* moonA, Moon* moonB);
