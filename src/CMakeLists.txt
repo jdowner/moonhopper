@@ -23,6 +23,8 @@ add_executable(moonhopper
   DataStore.h
   Engine.cpp
   Engine.h
+  GLFW.cpp
+  GLFW.h
   main.cpp
   MathUtils.cpp
   MathUtils.h
