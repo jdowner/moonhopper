@@ -32,7 +32,7 @@
 
 find_path( GLFW_INCLUDE_DIR
     NAMES
-        GL/glfw.h
+        GLFW/glfw3.h
     HINTS
         "${GLFW_LOCATION}/include"
         "$ENV{GLFW_LOCATION}/include"
@@ -49,7 +49,7 @@ find_path( GLFW_INCLUDE_DIR
         /usr/include/GL
         /usr/include
     DOC
-        "The directory where GL/glfw.h resides"
+        "The directory where GLFW/glfw3.h resides"
 )
 
 if (WIN32)
@@ -75,7 +75,7 @@ if (WIN32)
             NAMES
                 glfw32
                 glfw32s
-                glfw
+                glfw3
             HINTS
                 "${GLFW_LOCATION}/lib"
                 "${GLFW_LOCATION}/lib/x64"
@@ -96,7 +96,7 @@ else ()
     if (APPLE)
         find_library( GLFW_glfw_LIBRARY glfw
             NAMES
-                glfw
+                glfw3
             HINTS
                 "${GLFW_LOCATION}/lib"
                 "${GLFW_LOCATION}/lib/cocoa"
@@ -131,7 +131,7 @@ else ()
 
         find_library( GLFW_glfw_LIBRARY
             NAMES
-                glfw
+                glfw3
             HINTS
                 "${GLFW_LOCATION}/lib"
                 "$ENV{GLFW_LOCATION}/lib"

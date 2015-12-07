@@ -1,10 +1,10 @@
 #include "Renderer.h"
 #include <sstream>
 #include <boost/foreach.hpp>
-#include <GL/glfw.h>
 #include <GL/glu.h>
 #include <FTGL/ftgl.h>
 #include <cmath>
+#include "GLFW.h"
 #include "Universe.h"
 #include "DataStore.h"
 
@@ -130,7 +130,8 @@ namespace
 
 void Renderer::init()
 {
-  glfwSwapInterval(0);
+  glfw::swapInterval(0);
+
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_TEXTURE_2D);
@@ -182,8 +183,6 @@ void Renderer::render(const Universe& universe) const
   {
     renderDeathScreen(universe);
   }
-
-  glfwSwapBuffers();
 }
 
 void Renderer::renderMoons(const Universe& universe) const
