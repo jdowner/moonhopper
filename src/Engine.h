@@ -1,11 +1,13 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <memory>
 #include "Renderer.h"
 #include "Universe.h"
 #include "PeriodicDomain.h"
 #include "CollisionResolution.h"
 #include "UpdateContext.h"
+#include "GLFW.h"
 
 /**
  *
@@ -29,6 +31,7 @@ class Engine
   private:
     Universe m_universe;
     Renderer m_renderer;
+    glfw::Window* m_window;
     bool m_running;
 
     /**

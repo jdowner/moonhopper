@@ -6,6 +6,11 @@
 
 class Universe;
 
+namespace glfw
+{
+  class Window;
+}
+
 /**
  *
  */
@@ -15,6 +20,8 @@ class Renderer
     void init();
     void render(const Universe& universe) const;
     void renderText(int x, int y, const std::string& text) const;
+
+    void createWindow(int width, int height, const char* title);
 
   private:
     void renderMoons(const Universe& universe) const;

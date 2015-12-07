@@ -4,34 +4,47 @@
 #include <cassert>
 #include <cmath>
 #include <boost/foreach.hpp>
-#include <GL/glfw.h>
 #include <GL/glu.h>
 #include "DataStore.h"
+#include "GLFW.h"
 #include "CollisionResolution.h"
 #include "MathUtils.h"
 #include "UpdateContext.h"
 
+#include <iostream>
+
 Engine::Engine() :
   m_running(false),
   m_frameRate(30.0),
-  m_lastUpdate(0)
+  m_lastUpdate(0),
+  m_window(NULL)
 {
 }
 
+
+#if USE_GLFW3
+#include <GLFW/glfw3.h>
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  std::cout << key << std::endl;
+
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    glfwSetWindowShouldClose(window, GL_TRUE);
+}
+#endif // USE_GLFW3
+
 void Engine::init()
 {
-  if (!glfwInit())
-  {
-    throw std::runtime_error("Unable to initialize glfw");
-  }
+  glfw::init();
 
   const double height = DataStore::get<double>("WindowHeight", 800.0);
   const double width = DataStore::get<double>("WindowWidth", 1000.0);
-  if (!glfwOpenWindow(width,height,0,0,0,0,0,0,GLFW_WINDOW))
-  {
-    glfwTerminate();
-    throw std::runtime_error("Unable to create window");
-  }
+
+  m_window = new glfw::Window(width, height, "Moonhopper");
+  m_window->makeCurrent();
+
+//  glfwSetKeyCallback(m_window->m_window, key_callback);
 
   m_renderer.init();
 
@@ -40,7 +53,7 @@ void Engine::init()
 
 void Engine::shutdown()
 {
-  glfwTerminate();
+  glfw::terminate();
 }
 
 bool Engine::running() const
@@ -51,11 +64,15 @@ bool Engine::running() const
 void Engine::render()
 {
   m_renderer.render(m_universe);
+  m_window->swapBuffers();
 }
+
 
 void Engine::update()
 {
-  m_running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
+  m_window->pollEvents();
+
+  m_running = !glfw::getKey(glfw::KEY_ESC) && m_window->isOpen();
 
   UpdateContext context = createUpdateContext();
   m_universe.update(context);
@@ -66,26 +83,26 @@ void Engine::update()
 UpdateContext Engine::createUpdateContext() const
 {
   UpdateContext context;
-  context.currentTime = glfwGetTime();
+  context.currentTime = glfw::time();
   context.frameRate = m_frameRate;
-  context.keyLeft = (GLFW_PRESS == glfwGetKey(GLFW_KEY_LEFT));
-  context.keyRight = (GLFW_PRESS == glfwGetKey(GLFW_KEY_RIGHT));
-  context.keyUp = (GLFW_PRESS == glfwGetKey(GLFW_KEY_UP));
-  context.keyH = (GLFW_PRESS == glfwGetKey(72));
-  context.keyG = (GLFW_PRESS == glfwGetKey(71));
-  context.keyTab = (GLFW_PRESS == glfwGetKey(GLFW_KEY_TAB));
+  context.keyLeft = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_LEFT));
+  context.keyRight = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_RIGHT));
+  context.keyUp = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_UP));
+  context.keyG = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_G));
+  context.keyH = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_H));
+  context.keyTab = (glfw::KEY_PRESS == glfw::getKey(glfw::KEY_TAB));
 
   return context;
 }
 
 void Engine::sleep()
 {
-  double elapsed = glfwGetTime() - m_lastUpdate;
+  double elapsed = glfw::time() - m_lastUpdate;
   const double period = 1.0 / m_frameRate;
   while (elapsed < period)
   {
-    glfwSleep(period - elapsed);
-    elapsed = glfwGetTime() - m_lastUpdate;
+    glfw::sleep(period - elapsed);
+    elapsed = glfw::time() - m_lastUpdate;
   }
 }
 
