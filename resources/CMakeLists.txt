@@ -1,3 +1,7 @@
+set(CONFIGS
+  default.cfg
+  )
+
 set(IMAGES
   avatar.png
   dialog.png
@@ -6,22 +10,32 @@ set(IMAGES
   running.png
   )
 
+set(RESOURCES_CFG ${MOONHOPPER_RES_PATH}/config)
+set(RESOURCES_IMG ${MOONHOPPER_RES_PATH}/images)
+
 add_custom_command(
-  OUTPUT resources-cfg POST_BUILD
+  OUTPUT resource-dir POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E make_directory ${MOONHOPPER_RES_PATH}
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/default.cfg ${MOONHOPPER_RES_PATH}
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/default.cfg
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${MOONHOPPER_RES_PATH}/config
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${MOONHOPPER_RES_PATH}/images
   )
 
-foreach(image ${IMAGES})
-  set(resource_deps "${resource_deps} resources_${image}")
-  add_custom_command(
-    OUTPUT "resources_${image}" POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${MOONHOPPER_RES_PATH}
-    COMMAND ${CMAKE_COMMAND} -E copy ${image} ${MOONHOPPER_RES_PATH}
-    COMMAND echo ${image} > ${MOONHOPPER_RES_PATH}
-    )
-  message(STATUS "copying ${image}")
-endforeach()
+add_custom_target(resources ALL DEPENDS resource-dir)
 
-add_custom_target(resources ALL DEPENDS resources-cfg ${resources_deps})
+foreach(cfg ${CONFIGS})
+  add_custom_command(
+    TARGET resources POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${cfg} ${RESOURCES_CFG}
+    COMMAND ${CMAKE_COMMAND} -E echo "copying ${cfg} to ${RESOURCES_CFG}"
+    DEPENDS resource-dir ${CMAKE_CURRENT_SOURCE_DIR}/${cfg}
+    )
+endforeach(cfg ${CONFIGS})
+
+foreach(image ${IMAGES})
+  add_custom_command(
+    TARGET resources POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${image} ${RESOURCES_IMG}
+    COMMAND ${CMAKE_COMMAND} -E echo "copying ${image} to ${RESOURCES_IMG}"
+    DEPENDS resource-dir ${CMAKE_CURRENT_SOURCE_DIR}/${image}
+    )
+endforeach(image ${IMAGES})
