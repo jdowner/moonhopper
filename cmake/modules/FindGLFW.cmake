@@ -158,8 +158,8 @@ else ()
 
         find_library( GLFW_glfw_LIBRARY
             NAMES 
-                glfw
                 glfw3
+                glfw
             HINTS
                 "${GLFW_LOCATION}/lib"
                 "$ENV{GLFW_LOCATION}/lib"

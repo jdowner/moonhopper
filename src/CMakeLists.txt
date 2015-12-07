@@ -51,4 +51,4 @@ add_executable(moonhopper
   Vector2d.h
   )
 
-target_link_libraries(moonhopper GL GLU glfw png tinyxml ftgl)
+target_link_libraries(moonhopper GL GLU ${GLFW_LIBRARIES} png tinyxml ftgl)
