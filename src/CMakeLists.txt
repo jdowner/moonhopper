@@ -1,8 +1,15 @@
 set(CMAKE_CXX_FLAGS -DTIXML_USE_STL)
 set(EXECUTABLE_OUTPUT_PATH ${MOONHOPPER_BIN_PATH})
 
-include_directories(../tinyxml /usr/include/freetype2)
+include_directories(
+  /usr/include/freetype2
+  ${MOONHOPPER_INC_PATH}
+  ${MOONHOPPER_INC_PATH}/tinyxml
+  )
+
 link_directories(${MOONHOPPER_LIB_PATH}/lib)
+
+configure_file(VersionConfig.h.in ${MOONHOPPER_INC_PATH}/VersionConfig.h)
 
 add_definitions(-std=c++11)
 add_executable(moonhopper
