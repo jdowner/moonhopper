@@ -2,6 +2,7 @@
 #define ARGUMENTHANDLER_H
 
 #include <string>
+#include <memory>
 
 /**
  *
@@ -16,11 +17,11 @@ class ArgumentHandler
     bool debug() const;
 
     std::string getConfiguration() const;
-    const std::string& getResourcePath() const;
+    std::string getResourcePath() const;
 
   private:
-    std::string m_resourcePath;
-    std::string m_config;
+    std::unique_ptr<std::string> m_resource_path;
+    std::unique_ptr<std::string> m_config;
     bool m_loadConfig;
     bool m_runTests;
     bool m_debug;
